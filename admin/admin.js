@@ -1,229 +1,69 @@
-const JH_KEYS = {
-  project: 'jh_visual_project_v1',
-  products: 'jh_products_v1',
-  media: 'jh_media_v1',
-  settings: 'jh_settings_v1'
-};
-
-const $ = (s, root = document) => root.querySelector(s);
-const $$ = (s, root = document) => [...root.querySelectorAll(s)];
-const readJSON = (key, fallback) => {
-  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
-};
-const writeJSON = (key, value) => localStorage.setItem(key, JSON.stringify(value));
-const escapeHTML = (v='') => String(v).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-
-let products = readJSON(JH_KEYS.products, []);
-let media = readJSON(JH_KEYS.media, []);
-let settings = readJSON(JH_KEYS.settings, {
-  brand: 'JINHUAN', language: 'en', email: '', whatsapp: '', telegram: ''
-});
-let currentCoverData = '';
-
-const baseCss = `
-  *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#171717;background:#f5f1eb}.jh-section{padding:90px 6vw}.jh-hero{min-height:660px;display:grid;grid-template-columns:1.05fr .95fr;background:#f4f0e9}.jh-hero-copy{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:8vw}.jh-eyebrow{font-size:11px;letter-spacing:.18em;color:#9a7752;font-weight:700;margin:0 0 18px}.jh-hero h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(50px,6vw,88px);line-height:1.02;margin:0}.jh-hero p{font-size:16px;line-height:1.7;color:#756f66;max-width:580px;margin:24px 0}.jh-btn{display:inline-block;background:#1f1d19;color:#fff;padding:15px 24px;text-decoration:none;font-size:13px}.jh-hero-image{background:linear-gradient(145deg,#e9e0d5,#b8a694);min-height:580px;display:grid;place-items:center}.jh-placeholder-bag{width:52%;height:45%;border-radius:12px 12px 28px 28px;background:#221f1c;position:relative}.jh-placeholder-bag:before{content:'';position:absolute;width:42%;height:48%;border:15px solid #221f1c;border-bottom:0;border-radius:999px 999px 0 0;left:29%;top:-30%}.jh-features{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #ddd2c6;border-bottom:1px solid #ddd2c6;background:#fff}.jh-feature{padding:30px 5vw;border-right:1px solid #ddd2c6}.jh-feature:last-child{border-right:0}.jh-feature strong{display:block;font-size:13px}.jh-feature span{display:block;font-size:12px;color:#777;margin-top:5px}.jh-title{font-family:Georgia,serif;font-weight:400;font-size:clamp(38px,4.5vw,64px);line-height:1.05;margin:0 0 32px}.jh-text{color:#746f68;font-size:15px;line-height:1.8}.jh-image-text{display:grid;grid-template-columns:1fr 1fr;min-height:520px}.jh-image-text .image{background:linear-gradient(135deg,#d8cdc0,#a6927f);min-height:420px;background-size:cover;background-position:center}.jh-image-text .copy{padding:8vw 7vw;background:#fff;display:flex;flex-direction:column;justify-content:center}.jh-products{background:#faf8f4}.jh-product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.jh-product-card{background:#fff;border:1px solid #e2dbd2}.jh-product-img{aspect-ratio:3/4;background:#e8e0d7;overflow:hidden}.jh-product-img img{width:100%;height:100%;object-fit:cover}.jh-product-info{padding:16px}.jh-product-info h3{font-family:Georgia,serif;font-weight:400;font-size:19px;margin:0 0 5px}.jh-product-info p{font-size:11px;color:#777;margin:0}.jh-product-empty{grid-column:1/-1;border:1px dashed #cfc5ba;padding:45px;text-align:center;color:#8a8178;background:#fff}.jh-banner{min-height:390px;background:#23201c;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:70px 8vw}.jh-banner h2{font-family:Georgia,serif;font-size:clamp(40px,5vw,72px);font-weight:400;margin:0 0 16px}.jh-banner p{max-width:620px;margin:auto;color:#cbc5bd;line-height:1.7}.jh-contact{text-align:center;background:#eee7dd}.jh-spacer{height:70px}.jh-footer{background:#1f1d19;color:#fff;padding:55px 6vw;display:flex;justify-content:space-between;align-items:end}.jh-footer strong{font-family:Georgia,serif;font-size:44px;font-weight:400;letter-spacing:.08em}.jh-footer span{font-size:11px;color:#bbb}
-  @media(max-width:800px){.jh-hero,.jh-image-text{grid-template-columns:1fr}.jh-hero-copy{padding:70px 24px}.jh-hero-image{min-height:430px}.jh-features{grid-template-columns:1fr}.jh-feature{border-right:0;border-bottom:1px solid #ddd2c6}.jh-product-grid{grid-template-columns:1fr 1fr}.jh-section{padding:70px 24px}.jh-footer{flex-direction:column;align-items:flex-start;gap:20px}}@media(max-width:520px){.jh-product-grid{grid-template-columns:1fr}}
-`;
-
-function productGridHtml(){
-  const active = products.filter(p => p.status === 'active');
-  if(!active.length){
-    return `<div class="jh-product-empty">商品将在这里显示<br><small>进入“商品管理”新增商品后，点击后台顶部“刷新商品模块”</small></div>`;
-  }
-  return active.slice(0,12).map(p => `
-    <article class="jh-product-card">
-      <div class="jh-product-img">${p.cover ? `<img src="${p.cover}" alt="${escapeHTML(p.name)}">` : ''}</div>
-      <div class="jh-product-info"><h3>${escapeHTML(p.name)}</h3><p>${escapeHTML(p.sku)} · ${escapeHTML(p.size || p.category || '')}</p></div>
-    </article>`).join('');
+const KEYS={theme:'jh_simple_theme_v1',products:'jh_products_v2',media:'jh_media_v2',settings:'jh_settings_v2'};
+const $=(s,r=document)=>r.querySelector(s);const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const uid=()=>Math.random().toString(36).slice(2,9);const esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fileData=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)});
+let products=read(KEYS.products,[]),media=read(KEYS.media,[]),settings=read(KEYS.settings,{brand:'JINHUAN',language:'en',email:'',whatsapp:'',telegram:''});
+const defaults=[
+{id:'announce',type:'announcement',enabled:true,text:'WORLDWIDE PRODUCT CATALOGUE · CONTACT US FOR DETAILS'},
+{id:'header',type:'header',enabled:true,logo:'JINHUAN',menu1:'Collection',menu2:'About',menu3:'Contact'},
+{id:'hero',type:'hero',enabled:true,eyebrow:'CURATED HANDBAGS',title:'Quiet elegance, made to be carried.',text:'Discover our handbag catalogue. Browse the collection and contact us directly for product details.',button:'VIEW COLLECTION',image:'',layout:'text-left'},
+{id:'benefits',type:'benefits',enabled:true,title1:'Worldwide viewing',text1:'Fast product catalogue',title2:'Detailed products',text2:'Size · Material · Color · SKU',title3:'Direct inquiry',text3:'Contact us for any item'},
+{id:'products',type:'products',enabled:true,eyebrow:'THE COLLECTION',title:'Featured products',columns:'3',count:'6'},
+{id:'story',type:'imageText',enabled:true,eyebrow:'ABOUT JINHUAN',title:'Made for clear product discovery.',text:'Use this area to introduce your business, craftsmanship, service or collection story.',image:'',position:'left'},
+{id:'contact',type:'contact',enabled:true,eyebrow:'CONTACT',title:'Interested in a product?',text:'Contact us directly for availability and details.',button:'CONTACT US'},
+{id:'footer',type:'footer',enabled:true,title:'JINHUAN',text:'© 2026 JINHUAN · Global Product Catalogue'}
+];
+let sections=read(KEYS.theme,defaults),selectedId=sections[2]?.id||sections[0]?.id;
+const labels={announcement:['顶部公告','一行公告文字'],header:['导航栏','Logo 和菜单'],hero:['首屏大图','主标题 + 图片'],benefits:['三大卖点','三栏核心优势'],products:['商品区','自动显示已上架商品'],imageText:['图文介绍','图片 + 品牌故事'],contact:['联系区','联系方式与按钮'],footer:['页脚','网站底部信息']};
+const library=[['hero','首屏大图','大标题、说明和主视觉图片'],['products','商品区','自动显示已上架商品'],['imageText','图文介绍','图片配品牌或系列介绍'],['benefits','三大卖点','三栏核心卖点'],['contact','联系区','询盘与联系方式'],['announcement','顶部公告','顶部一行公告文字']];
+function save(){write(KEYS.theme,sections);$('#saveState').textContent='已保存';renderPreview()}
+function markSaving(){ $('#saveState').textContent='保存中…'; clearTimeout(markSaving.t);markSaving.t=setTimeout(save,250)}
+function renderSectionList(){const box=$('#sectionList');box.innerHTML=sections.map(s=>{const [t,sub]=labels[s.type]||[s.type,''];return `<div class="section-row ${s.id===selectedId?'active':''} ${s.enabled?'':'disabled'}" data-id="${s.id}"><span class="drag-handle">⋮⋮</span><div class="section-label"><strong>${t}</strong><small>${sub}</small></div><button class="visibility" title="显示/隐藏">${s.enabled?'◉':'○'}</button></div>`}).join('');
+ $$('.section-row',box).forEach(row=>{row.addEventListener('click',e=>{if(e.target.closest('.visibility'))return;selectedId=row.dataset.id;renderSectionList();renderEditor()});row.querySelector('.visibility').onclick=e=>{e.stopPropagation();const s=sections.find(x=>x.id===row.dataset.id);s.enabled=!s.enabled;markSaving();renderSectionList();renderEditor()}});
+ if(window.Sortable){new Sortable(box,{animation:160,handle:'.drag-handle',onEnd:e=>{const [m]=sections.splice(e.oldIndex,1);sections.splice(e.newIndex,0,m);markSaving();renderSectionList()}})} }
+function input(label,key,value,type='text',opts=''){if(type==='textarea')return `<label class="field"><span>${label}</span><textarea data-key="${key}" ${opts}>${esc(value)}</textarea></label>`;if(type==='select')return `<label class="field"><span>${label}</span><select data-key="${key}">${opts}</select></label>`;return `<label class="field"><span>${label}</span><input data-key="${key}" type="${type}" value="${esc(value)}" ${opts}></label>`}
+function imageField(s){return `<label class="field"><span>图片</span><div class="image-field"><div class="image-preview">${s.image?`<img src="${s.image}" alt="">`:'还没有图片'}</div><div class="image-actions"><label>上传图片<input class="section-image" type="file" accept="image/*" hidden></label><button type="button" class="choose-media">素材库</button></div></div></label>`}
+function renderEditor(){const s=sections.find(x=>x.id===selectedId),wrap=$('#sectionEditor'),empty=$('#emptyEditor');if(!s){empty.hidden=false;wrap.hidden=true;return}empty.hidden=true;wrap.hidden=false;const [title]=labels[s.type]||[s.type];let body='';
+ if(s.type==='announcement')body=input('公告文字','text',s.text);
+ if(s.type==='header')body=input('Logo 文字','logo',s.logo)+input('菜单 1','menu1',s.menu1)+input('菜单 2','menu2',s.menu2)+input('菜单 3','menu3',s.menu3);
+ if(s.type==='hero')body=imageField(s)+input('小标题','eyebrow',s.eyebrow)+input('主标题','title',s.title,'textarea')+input('说明文字','text',s.text,'textarea')+input('按钮文字','button',s.button)+`<label class="field"><span>图片位置</span><select data-key="layout"><option value="text-left" ${s.layout==='text-left'?'selected':''}>文字左 / 图片右</option><option value="text-right" ${s.layout==='text-right'?'selected':''}>图片左 / 文字右</option><option value="full" ${s.layout==='full'?'selected':''}>整张大图</option></select></label>`;
+ if(s.type==='benefits')body=input('卖点 1 标题','title1',s.title1)+input('卖点 1 说明','text1',s.text1)+input('卖点 2 标题','title2',s.title2)+input('卖点 2 说明','text2',s.text2)+input('卖点 3 标题','title3',s.title3)+input('卖点 3 说明','text3',s.text3);
+ if(s.type==='products')body=input('小标题','eyebrow',s.eyebrow)+input('标题','title',s.title)+`<div class="inline-2"><label class="field"><span>每行商品</span><select data-key="columns"><option value="2" ${s.columns==='2'?'selected':''}>2 个</option><option value="3" ${s.columns==='3'?'selected':''}>3 个</option><option value="4" ${s.columns==='4'?'selected':''}>4 个</option></select></label><label class="field"><span>显示数量</span><select data-key="count"><option value="4" ${s.count==='4'?'selected':''}>4 个</option><option value="6" ${s.count==='6'?'selected':''}>6 个</option><option value="8" ${s.count==='8'?'selected':''}>8 个</option><option value="12" ${s.count==='12'?'selected':''}>12 个</option></select></label></div><p class="help">商品内容来自左侧“商品管理”，这里不用重复填写。</p>`;
+ if(s.type==='imageText')body=imageField(s)+input('小标题','eyebrow',s.eyebrow)+input('标题','title',s.title)+input('介绍文字','text',s.text,'textarea')+`<label class="field"><span>图片位置</span><select data-key="position"><option value="left" ${s.position==='left'?'selected':''}>图片左</option><option value="right" ${s.position==='right'?'selected':''}>图片右</option></select></label>`;
+ if(s.type==='contact')body=input('小标题','eyebrow',s.eyebrow)+input('标题','title',s.title)+input('说明','text',s.text,'textarea')+input('按钮文字','button',s.button);
+ if(s.type==='footer')body=input('品牌文字','title',s.title)+input('版权信息','text',s.text);
+ wrap.innerHTML=`<div class="editor-head"><h2>${title}</h2>${['header','footer'].includes(s.type)?'':`<button class="delete-section">删除模块</button>`}</div><div class="editor-body"><div class="switch-row"><span>显示这个模块</span><input class="toggle enabled-toggle" type="checkbox" ${s.enabled?'checked':''}></div>${body}</div>`;
+ $$('[data-key]',wrap).forEach(el=>el.addEventListener('input',()=>{s[el.dataset.key]=el.value;markSaving()}));
+ $('.enabled-toggle',wrap).onchange=e=>{s.enabled=e.target.checked;markSaving();renderSectionList()};
+ const del=$('.delete-section',wrap);if(del)del.onclick=()=>{if(!confirm('确定删除这个模块吗？'))return;sections=sections.filter(x=>x.id!==s.id);selectedId=sections[0]?.id||null;markSaving();renderSectionList();renderEditor()};
+ const file=$('.section-image',wrap);if(file)file.onchange=async e=>{const f=e.target.files[0];if(!f)return;const data=await fileData(f);s.image=data;media.unshift({id:uid(),name:f.name,src:data});write(KEYS.media,media);markSaving();renderEditor();renderMedia()};
+ const choose=$('.choose-media',wrap);if(choose)choose.onclick=()=>{if(!media.length){alert('图片素材里还没有图片，先上传一张。');return}const names=media.slice(0,8).map((m,i)=>`${i+1}. ${m.name}`).join('\n');const n=Number(prompt(`输入要使用的图片编号：\n${names}`));if(n&&media[n-1]){s.image=media[n-1].src;markSaving();renderEditor()}};
 }
-
-const initialHtml = `
-  <section class="jh-hero">
-    <div class="jh-hero-copy"><p class="jh-eyebrow">CURATED HANDBAGS</p><h1>Quiet elegance,<br>made to be carried.</h1><p>Discover our handbag catalogue. Browse the collection and contact us directly for product details.</p><a class="jh-btn" href="#products">VIEW COLLECTION</a></div>
-    <div class="jh-hero-image"><div class="jh-placeholder-bag"></div></div>
-  </section>
-  <section class="jh-features"><div class="jh-feature"><strong>Worldwide viewing</strong><span>Fast product catalogue</span></div><div class="jh-feature"><strong>Detailed products</strong><span>Size · Material · Color · SKU</span></div><div class="jh-feature"><strong>Direct inquiry</strong><span>Contact us for any item</span></div></section>
-  <section class="jh-section jh-products" id="products"><p class="jh-eyebrow">THE COLLECTION</p><h2 class="jh-title">Featured products</h2><div class="jh-product-grid" data-jh-product-grid>${productGridHtml()}</div></section>
-  <section class="jh-image-text"><div class="image"></div><div class="copy"><p class="jh-eyebrow">ABOUT JINHUAN</p><h2 class="jh-title">Made for clear product discovery.</h2><p class="jh-text">Use this area to introduce your business, craftsmanship, service or collection story.</p></div></section>
-  <section class="jh-section jh-contact"><p class="jh-eyebrow">CONTACT</p><h2 class="jh-title">Interested in a product?</h2><p class="jh-text">Contact us directly for availability and details.</p></section>
-  <footer class="jh-footer"><strong>JINHUAN</strong><span>© 2026 JINHUAN · Global Product Catalogue</span></footer>
-`;
-
-const savedProject = readJSON(JH_KEYS.project, null);
-const editor = grapesjs.init({
-  container: '#gjs',
-  height: '100%',
-  width: 'auto',
-  fromElement: false,
-  storageManager: false,
-  panels: { defaults: [] },
-  blockManager: { appendTo: '#blocks' },
-  traitManager: { appendTo: '#traits' },
-  styleManager: {
-    appendTo: '#styles',
-    sectors: [
-      { name:'尺寸与间距', open:true, buildProps:['width','height','min-height','max-width','margin','padding'] },
-      { name:'排版', open:false, buildProps:['font-family','font-size','font-weight','letter-spacing','color','line-height','text-align','text-decoration'] },
-      { name:'背景', open:false, buildProps:['background-color','background-image','background-size','background-position'] },
-      { name:'边框与效果', open:false, buildProps:['border','border-radius','box-shadow','opacity'] },
-      { name:'布局', open:false, buildProps:['display','flex-direction','justify-content','align-items','gap','grid-template-columns'] }
-    ]
-  },
-  layerManager: { appendTo: '#layers' },
-  deviceManager: {
-    devices: [
-      { name:'Desktop', width:'' },
-      { name:'Tablet', width:'768px', widthMedia:'900px' },
-      { name:'Mobile portrait', width:'390px', widthMedia:'480px' }
-    ]
-  },
-  assetManager: { upload:false }
-});
-
-if(savedProject){
-  try { editor.loadProjectData(savedProject); } catch { editor.setComponents(initialHtml); editor.setStyle(baseCss); }
-} else {
-  editor.setComponents(initialHtml);
-  editor.setStyle(baseCss);
-}
-
-const bm = editor.BlockManager;
-const addBlock = (id,label,content,category='常用模块',media='▦') => bm.add(id,{label,content,category,media});
-addBlock('hero','首屏 Banner',`<section class="jh-hero"><div class="jh-hero-copy"><p class="jh-eyebrow">NEW COLLECTION</p><h1>New season,<br>new elegance.</h1><p>Write your campaign text here.</p><a class="jh-btn" href="#products">VIEW COLLECTION</a></div><div class="jh-hero-image"><div class="jh-placeholder-bag"></div></div></section>`,'首页模块','▰');
-addBlock('products','商品网格',`<section class="jh-section jh-products"><p class="jh-eyebrow">COLLECTION</p><h2 class="jh-title">Our products</h2><div class="jh-product-grid" data-jh-product-grid>${productGridHtml()}</div></section>`,'商品模块','▦');
-addBlock('features','三栏卖点',`<section class="jh-features"><div class="jh-feature"><strong>Premium materials</strong><span>Carefully selected details</span></div><div class="jh-feature"><strong>Worldwide catalogue</strong><span>Easy to browse anywhere</span></div><div class="jh-feature"><strong>Direct service</strong><span>Contact us for details</span></div></section>`,'首页模块','☷');
-addBlock('image-text','图片 + 文字',`<section class="jh-image-text"><div class="image"></div><div class="copy"><p class="jh-eyebrow">STORY</p><h2 class="jh-title">A title for your story.</h2><p class="jh-text">Add a short introduction, collection story, material details or service promise.</p></div></section>`,'内容模块','◩');
-addBlock('banner','通栏大标题',`<section class="jh-banner"><div><p class="jh-eyebrow">JINHUAN</p><h2>Elegant by design.</h2><p>Use this section as a campaign banner, brand statement or seasonal message.</p></div></section>`,'内容模块','▰');
-addBlock('heading','标题',`<h2 class="jh-title" style="padding:20px 6vw">Section title</h2>`,'基础组件','H');
-addBlock('text','文字',`<p class="jh-text" style="padding:20px 6vw">Click to edit this text. Add product information, a brand story or service description.</p>`,'基础组件','T');
-addBlock('image','图片',`<img src="https://placehold.co/1200x800/ddd4ca/766b60?text=Upload+Image" style="display:block;width:100%;max-height:700px;object-fit:cover" alt="">`,'基础组件','▧');
-addBlock('button','按钮',`<div style="padding:22px 6vw"><a class="jh-btn" href="#">BUTTON</a></div>`,'基础组件','▣');
-addBlock('contact','联系模块',`<section class="jh-section jh-contact"><p class="jh-eyebrow">CONTACT</p><h2 class="jh-title">Interested in this collection?</h2><p class="jh-text">Contact us for availability and more details.</p><a class="jh-btn" href="mailto:hello@jinhuan.me">CONTACT US</a></section>`,'内容模块','✉');
-addBlock('spacer','空白间距',`<div class="jh-spacer"></div>`,'基础组件','↕');
-addBlock('footer','页脚',`<footer class="jh-footer"><strong>JINHUAN</strong><span>© 2026 JINHUAN · Global Product Catalogue</span></footer>`,'网站结构','▬');
-
-media.forEach(item => editor.AssetManager.add({src:item.src,name:item.name}));
-
-let saveTimer;
-editor.on('update', () => {
-  $('#saveState').textContent = '正在保存…';
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
-    writeJSON(JH_KEYS.project, editor.getProjectData());
-    $('#saveState').textContent = '草稿已保存';
-  }, 500);
-});
-
-$$('.device-btn').forEach(btn => btn.addEventListener('click', () => {
-  editor.setDevice(btn.dataset.device);
-  $$('.device-btn').forEach(b => b.classList.toggle('active', b === btn));
-}));
-
-$$('.property-tab').forEach(btn => btn.addEventListener('click', () => {
-  $$('.property-tab').forEach(b => b.classList.toggle('active', b === btn));
-  $$('.prop-panel').forEach(p => p.classList.remove('active'));
-  $(`#prop-${btn.dataset.prop}`).classList.add('active');
-}));
-
-$$('.nav-item[data-panel]').forEach(btn => btn.addEventListener('click', () => {
-  $$('.nav-item[data-panel]').forEach(b => b.classList.toggle('active', b === btn));
-  $$('.app-panel').forEach(p => p.classList.remove('active'));
-  $(`#panel-${btn.dataset.panel}`).classList.add('active');
-}));
-
-function completeHtml(){
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(settings.brand || 'JINHUAN')}</title><style>${editor.getCss()}</style></head><body>${editor.getHtml()}</body></html>`;
-}
-
-$('#previewBtn').addEventListener('click', () => {
-  const blob = new Blob([completeHtml()], {type:'text/html'});
-  window.open(URL.createObjectURL(blob), '_blank');
-});
-$('#exportBtn').addEventListener('click', () => {
-  const blob = new Blob([completeHtml()], {type:'text/html'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'jinhuan-homepage.html'; a.click();
-  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
-});
-
-function showMessage(title, html){
-  $('#messageTitle').textContent = title;
-  $('#messageBody').innerHTML = html;
-  $('#messageDialog').showModal();
-}
-$$('.close-message').forEach(b => b.addEventListener('click', () => $('#messageDialog').close()));
-$('#publishBtn').addEventListener('click', () => showMessage('发布功能正在等待云端连接', `
-  <p>可视化后台已经可以装修、上传图片和管理商品。现在的修改会安全保存在你当前浏览器里。</p>
-  <p>要做到“点发布 → 全球客户立刻看到”，下一步需要连接免费的 <b>Firebase</b>：</p>
-  <p><code>Authentication</code> 管理后台登录<br><code>Firestore</code> 保存装修和商品<br><code>Storage</code> 保存商品图片</p>
-  <p>连接完成后，这个“发布网站”按钮会直接发布到 <b>jinhuan.me</b>。</p>`));
-$('#firebaseHelpBtn').addEventListener('click', () => showMessage('Firebase 下一步', `<p>先不用现在配置。等你确认这个拖拽后台操作方式符合你的习惯后，我再继续把 Firebase 接进来。</p><p>届时你只需要创建一个 Firebase 项目，把网页应用配置给我，其他代码我继续完成。</p>`));
-
-function refreshProductGrids(){
-  const grids = editor.DomComponents.getWrapper().find('[data-jh-product-grid]');
-  grids.forEach(grid => grid.components(productGridHtml()));
-  writeJSON(JH_KEYS.project, editor.getProjectData());
-  $('#saveState').textContent = '商品模块已刷新';
-  setTimeout(()=>$('#saveState').textContent='草稿已保存',1400);
-}
-$('#refreshProductsBtn').addEventListener('click', refreshProductGrids);
-
-function categories(){ return [...new Set(products.map(p=>p.category).filter(Boolean))].sort(); }
-function renderProducts(){
-  const query = ($('#productSearch').value || '').toLowerCase();
-  const category = $('#categoryFilter').value || 'all';
-  const filtered = products.filter(p => (category==='all'||p.category===category) && (`${p.name} ${p.sku}`.toLowerCase().includes(query)));
-  $('#productEmpty').style.display = products.length ? 'none' : 'block';
-  $('#productList').innerHTML = filtered.map(p => `<article class="product-card">
-    <div class="product-thumb">${p.cover?`<img src="${p.cover}" alt="${escapeHTML(p.name)}">`:'暂无图片'}</div>
-    <div class="product-card-body"><h3>${escapeHTML(p.name)}</h3><div class="product-meta"><span>${escapeHTML(p.sku)}</span><span>${escapeHTML(p.category||'未分类')}</span><span>${escapeHTML(p.size||'')}</span></div><span class="status-pill ${p.status==='draft'?'draft':''}">${p.status==='active'?'已上架':'草稿'}</span><div class="product-actions"><button data-edit="${p.id}">编辑</button><button data-duplicate="${p.id}">复制</button><button class="danger" data-delete="${p.id}">删除</button></div></div>
-  </article>`).join('');
-  $('#categoryFilter').innerHTML = `<option value="all">全部分类</option>` + categories().map(c=>`<option value="${escapeHTML(c)}" ${c===category?'selected':''}>${escapeHTML(c)}</option>`).join('');
-}
-
-function resetProductForm(){
-  $('#productForm').reset(); $('#pId').value=''; currentCoverData=''; $('#coverPreview').style.display='none'; $('#coverPreview').src=''; $('#coverHint').textContent='点击选择图片'; $('#productDialogTitle').textContent='新增商品';
-}
-function openProduct(product){
-  resetProductForm();
-  if(product){
-    $('#productDialogTitle').textContent='编辑商品'; $('#pId').value=product.id; $('#pName').value=product.name||''; $('#pSku').value=product.sku||''; $('#pCategory').value=product.category||''; $('#pSize').value=product.size||''; $('#pMaterial').value=product.material||''; $('#pColor').value=product.color||''; $('#pStatus').value=product.status||'active'; $('#pDescription').value=product.description||''; currentCoverData=product.cover||'';
-    if(currentCoverData){ $('#coverPreview').src=currentCoverData; $('#coverPreview').style.display='block'; $('#coverHint').textContent='点击可更换图片'; }
-  }
-  $('#productDialog').showModal();
-}
-$('#newProductBtn').addEventListener('click',()=>openProduct());
-$('#pCover').addEventListener('change', e => {
-  const file=e.target.files[0]; if(!file)return; const reader=new FileReader(); reader.onload=()=>{currentCoverData=reader.result; $('#coverPreview').src=currentCoverData; $('#coverPreview').style.display='block'; $('#coverHint').textContent=file.name;}; reader.readAsDataURL(file);
-});
-$('#saveProductBtn').addEventListener('click', e => {
-  e.preventDefault(); if(!$('#pName').value.trim()||!$('#pSku').value.trim()){showMessage('请补充信息','<p>商品名称和 SKU 为必填项。</p>');return;}
-  const id=$('#pId').value||`p_${Date.now()}`; const product={id,name:$('#pName').value.trim(),sku:$('#pSku').value.trim(),category:$('#pCategory').value.trim(),size:$('#pSize').value.trim(),material:$('#pMaterial').value.trim(),color:$('#pColor').value.trim(),status:$('#pStatus').value,description:$('#pDescription').value.trim(),cover:currentCoverData,updatedAt:Date.now()};
-  const idx=products.findIndex(p=>p.id===id); if(idx>=0)products[idx]=product; else products.unshift(product); writeJSON(JH_KEYS.products,products); renderProducts(); $('#productDialog').close(); refreshProductGrids();
-});
-$('#productList').addEventListener('click', e => {
-  const edit=e.target.dataset.edit, del=e.target.dataset.delete, duplicate=e.target.dataset.duplicate;
-  if(edit) openProduct(products.find(p=>p.id===edit));
-  if(del && confirm('确定删除这个商品吗？')){products=products.filter(p=>p.id!==del);writeJSON(JH_KEYS.products,products);renderProducts();refreshProductGrids();}
-  if(duplicate){const source=products.find(p=>p.id===duplicate);if(source){products.unshift({...source,id:`p_${Date.now()}`,name:`${source.name} Copy`,sku:`${source.sku}-COPY`,updatedAt:Date.now()});writeJSON(JH_KEYS.products,products);renderProducts();}}
-});
-$('#productSearch').addEventListener('input',renderProducts); $('#categoryFilter').addEventListener('change',renderProducts);
-
-function renderMedia(){
-  $('#mediaEmpty').style.display=media.length?'none':'block';
-  $('#mediaGrid').innerHTML=media.map((m,i)=>`<div class="media-card"><img src="${m.src}" alt=""><div class="media-actions"><span title="${escapeHTML(m.name)}">${escapeHTML(m.name)}</span><button data-media-delete="${i}">删除</button></div></div>`).join('');
-}
-$('#mediaUpload').addEventListener('change', async e => {
-  const files=[...e.target.files];
-  for(const file of files){
-    const src=await new Promise(resolve=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.readAsDataURL(file)});
-    const item={name:file.name,src,createdAt:Date.now()}; media.unshift(item); editor.AssetManager.add({src,name:file.name});
-  }
-  try{writeJSON(JH_KEYS.media,media);}catch{showMessage('图片太多','<p>第一阶段使用浏览器本地存储，空间有限。Firebase Storage 接好后就不会有这个限制。</p>');}
-  renderMedia(); e.target.value='';
-});
-$('#mediaGrid').addEventListener('click',e=>{if(e.target.dataset.mediaDelete!==undefined){media.splice(Number(e.target.dataset.mediaDelete),1);writeJSON(JH_KEYS.media,media);renderMedia();}});
-
-$('#settingBrand').value=settings.brand||'JINHUAN'; $('#settingLanguage').value=settings.language||'en'; $('#settingEmail').value=settings.email||''; $('#settingWhatsapp').value=settings.whatsapp||''; $('#settingTelegram').value=settings.telegram||'';
-$('#saveSettingsBtn').addEventListener('click',()=>{settings={brand:$('#settingBrand').value.trim()||'JINHUAN',language:$('#settingLanguage').value,email:$('#settingEmail').value.trim(),whatsapp:$('#settingWhatsapp').value.trim(),telegram:$('#settingTelegram').value.trim()};writeJSON(JH_KEYS.settings,settings);showMessage('设置已保存','<p>品牌和联系方式已经保存在当前后台草稿中。</p>');});
-
-renderProducts(); renderMedia();
+function productCards(count=6,columns=3){const active=products.filter(p=>p.status==='active').slice(0,Number(count));if(!active.length)return `<div class="empty-product">商品会显示在这里<br><small>进入后台“商品管理”新增商品</small></div>`;return `<div class="product-cards cols-${columns}">${active.map(p=>`<article><div class="product-img">${p.cover?`<img src="${p.cover}" alt="${esc(p.name)}">`:''}</div><h3>${esc(p.name)}</h3><p>${esc(p.sku)}${p.size?' · '+esc(p.size):''}</p></article>`).join('')}</div>`}
+function sectionHtml(s){const click=`onclick="parent.postMessage({type:'jh-select',id:'${s.id}'},'*')"`;if(!s.enabled)return'';
+ if(s.type==='announcement')return `<div ${click} class="ann edit-zone">${esc(s.text)}</div>`;
+ if(s.type==='header')return `<header ${click} class="site-head edit-zone"><div class="logo">${esc(s.logo)}</div><nav><a href="#collection">${esc(s.menu1)}</a><a href="#about">${esc(s.menu2)}</a><a href="#contact">${esc(s.menu3)}</a></nav></header>`;
+ if(s.type==='hero'){const img=s.image?`style="background-image:url('${s.image}')"`:'';if(s.layout==='full')return `<section ${click} class="hero hero-full edit-zone" ${img}><div class="overlay"><p class="eyebrow">${esc(s.eyebrow)}</p><h1>${esc(s.title)}</h1><p>${esc(s.text)}</p><a href="#collection">${esc(s.button)}</a></div></section>`;return `<section ${click} class="hero ${s.layout==='text-right'?'reverse':''} edit-zone"><div class="hero-copy"><p class="eyebrow">${esc(s.eyebrow)}</p><h1>${esc(s.title)}</h1><p>${esc(s.text)}</p><a href="#collection">${esc(s.button)}</a></div><div class="hero-image" ${img}>${s.image?'':'<span>在后台上传首屏图片</span>'}</div></section>`}
+ if(s.type==='benefits')return `<section ${click} class="benefits edit-zone"><div><b>${esc(s.title1)}</b><span>${esc(s.text1)}</span></div><div><b>${esc(s.title2)}</b><span>${esc(s.text2)}</span></div><div><b>${esc(s.title3)}</b><span>${esc(s.text3)}</span></div></section>`;
+ if(s.type==='products')return `<section ${click} id="collection" class="section edit-zone"><p class="eyebrow">${esc(s.eyebrow)}</p><h2>${esc(s.title)}</h2>${productCards(s.count,s.columns)}</section>`;
+ if(s.type==='imageText'){const img=s.image?`style="background-image:url('${s.image}')"`:'';return `<section ${click} id="about" class="image-text ${s.position==='right'?'reverse':''} edit-zone"><div class="story-image" ${img}>${s.image?'':'<span>上传品牌/系列图片</span>'}</div><div class="story-copy"><p class="eyebrow">${esc(s.eyebrow)}</p><h2>${esc(s.title)}</h2><p>${esc(s.text)}</p></div></section>`}
+ if(s.type==='contact')return `<section ${click} id="contact" class="contact edit-zone"><p class="eyebrow">${esc(s.eyebrow)}</p><h2>${esc(s.title)}</h2><p>${esc(s.text)}</p><a href="mailto:${esc(settings.email||'hello@jinhuan.me')}">${esc(s.button)}</a></section>`;
+ if(s.type==='footer')return `<footer ${click} class="foot edit-zone"><strong>${esc(s.title)}</strong><span>${esc(s.text)}</span></footer>`;return''}
+function previewDoc(){return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#181714;background:#f4f0e9}a{text-decoration:none;color:inherit}.edit-zone{cursor:pointer;outline:2px solid transparent;outline-offset:-2px}.edit-zone:hover{outline-color:#5c6ac4}.ann{background:#211f1b;color:#fff;text-align:center;padding:9px 15px;font-size:10px;letter-spacing:.1em}.site-head{height:74px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;background:#f4f0e9;border-bottom:1px solid #d9d1c6}.logo{font-family:Georgia,serif;letter-spacing:.16em;font-size:23px}.site-head nav{display:flex;gap:28px;font-size:12px}.hero{min-height:620px;display:grid;grid-template-columns:1.05fr .95fr}.hero.reverse{grid-template-columns:.95fr 1.05fr}.hero.reverse .hero-copy{order:2}.hero-copy{padding:8vw 7vw;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}.eyebrow{font-size:10px;letter-spacing:.17em;color:#9a7752;font-weight:bold;margin:0 0 16px}.hero h1,.section h2,.story-copy h2,.contact h2{font-family:Georgia,serif;font-weight:400;line-height:1.03;margin:0}.hero h1{font-size:clamp(46px,6vw,84px)}.hero-copy>p:not(.eyebrow){color:#716b63;line-height:1.75;max-width:570px;margin:24px 0}.hero-copy a,.contact a{background:#211f1b;color:#fff;padding:14px 22px;font-size:12px}.hero-image{background:linear-gradient(145deg,#e9e0d5,#b8a694);background-size:cover;background-position:center;display:grid;place-items:center;color:#fff;font-size:12px;min-height:540px}.hero-full{min-height:700px;background:linear-gradient(145deg,#b7a593,#796959);background-size:cover;background-position:center;display:flex;align-items:end;color:#fff}.hero-full .overlay{width:100%;padding:90px 7vw;background:linear-gradient(transparent,rgba(0,0,0,.55))}.hero-full .eyebrow{color:#fff}.hero-full h1{max-width:780px}.hero-full p:not(.eyebrow){max-width:620px;line-height:1.7}.hero-full a{display:inline-block;margin-top:15px;background:#fff;color:#111;padding:14px 22px}.benefits{display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border-block:1px solid #ddd4c9}.benefits div{padding:26px 5vw;border-right:1px solid #ddd4c9}.benefits div:last-child{border:0}.benefits b,.benefits span{display:block}.benefits b{font-size:12px}.benefits span{font-size:11px;color:#777;margin-top:4px}.section{padding:95px 5vw;background:#faf8f4}.section h2,.story-copy h2,.contact h2{font-size:clamp(36px,4.5vw,62px)}.product-cards{margin-top:38px;display:grid;gap:18px}.cols-2{grid-template-columns:repeat(2,1fr)}.cols-3{grid-template-columns:repeat(3,1fr)}.cols-4{grid-template-columns:repeat(4,1fr)}.product-cards article{background:#fff}.product-img{aspect-ratio:3/4;background:#e8e0d7;overflow:hidden}.product-img img{width:100%;height:100%;object-fit:cover}.product-cards h3{font-family:Georgia,serif;font-weight:400;margin:14px 14px 4px;font-size:18px}.product-cards p{margin:0 14px 16px;color:#777;font-size:10px}.empty-product{grid-column:1/-1;border:1px dashed #bbb;padding:45px;text-align:center;background:#fff;color:#888}.image-text{display:grid;grid-template-columns:1fr 1fr;background:#fff;min-height:500px}.image-text.reverse .story-image{order:2}.story-image{background:linear-gradient(135deg,#d8cdc0,#a6927f);background-size:cover;background-position:center;display:grid;place-items:center;color:#fff;font-size:12px;min-height:430px}.story-copy{padding:8vw 7vw;display:flex;flex-direction:column;justify-content:center}.story-copy>p:not(.eyebrow){color:#756f66;line-height:1.8}.contact{text-align:center;padding:100px 5vw;background:#eee7dd}.contact>p:not(.eyebrow){color:#756f66;max-width:600px;margin:18px auto 26px;line-height:1.7}.foot{background:#211f1b;color:#fff;padding:50px 5vw;display:flex;justify-content:space-between;align-items:end}.foot strong{font-family:Georgia,serif;font-size:46px;font-weight:400}.foot span{font-size:10px;color:#bbb}@media(max-width:800px){.site-head nav{display:none}.hero,.hero.reverse,.image-text{grid-template-columns:1fr}.hero.reverse .hero-copy,.image-text.reverse .story-image{order:initial}.hero-copy{padding:70px 24px 55px}.hero-image{min-height:420px}.benefits{grid-template-columns:1fr}.benefits div{border-right:0;border-bottom:1px solid #ddd4c9}.cols-3,.cols-4{grid-template-columns:repeat(2,1fr)}.section{padding:70px 22px}.story-copy{padding:70px 24px}.foot{flex-direction:column;align-items:flex-start;gap:20px}}@media(max-width:480px){.product-cards,.cols-2,.cols-3,.cols-4{grid-template-columns:1fr}}</style></head><body>${sections.map(sectionHtml).join('')}</body></html>`}
+function renderPreview(){const frame=$('#previewFrame');frame.srcdoc=previewDoc()}
+window.addEventListener('message',e=>{if(e.data?.type==='jh-select'){selectedId=e.data.id;renderSectionList();renderEditor()}});
+function addSection(type){const base={id:uid(),type,enabled:true};if(type==='hero')Object.assign(base,{eyebrow:'NEW COLLECTION',title:'New season, new elegance.',text:'Add your campaign text here.',button:'VIEW COLLECTION',image:'',layout:'text-left'});if(type==='products')Object.assign(base,{eyebrow:'COLLECTION',title:'Our products',columns:'3',count:'6'});if(type==='imageText')Object.assign(base,{eyebrow:'STORY',title:'A title for your story.',text:'Add a short introduction or collection story.',image:'',position:'left'});if(type==='benefits')Object.assign(base,{title1:'Premium materials',text1:'Carefully selected details',title2:'Worldwide catalogue',text2:'Easy to browse anywhere',title3:'Direct service',text3:'Contact us for details'});if(type==='contact')Object.assign(base,{eyebrow:'CONTACT',title:'Interested in this collection?',text:'Contact us for availability and more details.',button:'CONTACT US'});if(type==='announcement')Object.assign(base,{text:'NEW COLLECTION · WORLDWIDE VIEWING'});sections.push(base);selectedId=base.id;save();renderSectionList();renderEditor();$('#addSectionDialog').close()}
+function renderLibrary(){$('#sectionLibrary').innerHTML=library.map(x=>`<button class="library-card" data-type="${x[0]}"><b>${x[1]}</b><span>${x[2]}</span></button>`).join('');$$('.library-card').forEach(b=>b.onclick=()=>addSection(b.dataset.type))}
+function renderProducts(){const q=($('#productSearch')?.value||'').toLowerCase(),cat=$('#categoryFilter')?.value||'all';const cats=[...new Set(products.map(p=>p.category).filter(Boolean))];if($('#categoryFilter'))$('#categoryFilter').innerHTML='<option value="all">全部分类</option>'+cats.map(c=>`<option ${c===cat?'selected':''}>${esc(c)}</option>`).join('');const data=products.filter(p=>(!q||`${p.name} ${p.sku}`.toLowerCase().includes(q))&&(cat==='all'||p.category===cat));$('#productEmpty').style.display=data.length?'none':'block';$('#productList').innerHTML=data.map(p=>`<article class="product-card"><div class="product-thumb">${p.cover?`<img src="${p.cover}" alt="">`:'暂无图片'}</div><div class="product-card-body"><h3>${esc(p.name)}</h3><div class="product-meta">${esc(p.sku)}${p.size?' · '+esc(p.size):''}${p.category?' · '+esc(p.category):''}</div><span class="pill ${p.status==='draft'?'draft':''}">${p.status==='active'?'已上架':'草稿'}</span><div class="product-actions"><button data-edit="${p.id}">编辑</button><button class="danger" data-delete="${p.id}">删除</button></div></div></article>`).join('');$$('[data-edit]').forEach(b=>b.onclick=()=>openProduct(b.dataset.edit));$$('[data-delete]').forEach(b=>b.onclick=()=>{if(confirm('确定删除这个商品吗？')){products=products.filter(p=>p.id!==b.dataset.delete);write(KEYS.products,products);renderProducts();renderPreview()}})}
+let pendingCover='';function openProduct(id=''){const p=products.find(x=>x.id===id);$('#productDialogTitle').textContent=p?'编辑商品':'新增商品';$('#pId').value=p?.id||'';$('#pName').value=p?.name||'';$('#pSku').value=p?.sku||'';$('#pCategory').value=p?.category||'';$('#pSize').value=p?.size||'';$('#pMaterial').value=p?.material||'';$('#pColor').value=p?.color||'';$('#pStatus').value=p?.status||'active';$('#pDescription').value=p?.description||'';pendingCover=p?.cover||'';$('#coverPreview').style.display=pendingCover?'block':'none';$('#coverPreview').src=pendingCover||'';$('#productDialog').showModal()}
+$('#pCover').onchange=async e=>{const f=e.target.files[0];if(!f)return;pendingCover=await fileData(f);$('#coverPreview').src=pendingCover;$('#coverPreview').style.display='block';media.unshift({id:uid(),name:f.name,src:pendingCover});write(KEYS.media,media);renderMedia()};
+$('#productForm').onsubmit=e=>{e.preventDefault();const id=$('#pId').value||uid();const obj={id,name:$('#pName').value.trim(),sku:$('#pSku').value.trim(),category:$('#pCategory').value.trim(),size:$('#pSize').value.trim(),material:$('#pMaterial').value.trim(),color:$('#pColor').value.trim(),status:$('#pStatus').value,description:$('#pDescription').value.trim(),cover:pendingCover};if(!obj.name||!obj.sku)return;const i=products.findIndex(x=>x.id===id);if(i>=0)products[i]=obj;else products.unshift(obj);write(KEYS.products,products);$('#productDialog').close();renderProducts();renderPreview()};
+function renderMedia(){$('#mediaEmpty').style.display=media.length?'none':'block';$('#mediaGrid').innerHTML=media.map(m=>`<div class="media-card"><img src="${m.src}" alt=""><div class="media-card-foot"><span>${esc(m.name)}</span><button data-media-delete="${m.id}">删除</button></div></div>`).join('');$$('[data-media-delete]').forEach(b=>b.onclick=()=>{media=media.filter(x=>x.id!==b.dataset.mediaDelete);write(KEYS.media,media);renderMedia()})}
+$('#mediaUpload').onchange=async e=>{for(const f of [...e.target.files])media.unshift({id:uid(),name:f.name,src:await fileData(f)});write(KEYS.media,media);renderMedia()};
+function loadSettings(){$('#settingBrand').value=settings.brand||'JINHUAN';$('#settingLanguage').value=settings.language||'en';$('#settingEmail').value=settings.email||'';$('#settingWhatsapp').value=settings.whatsapp||'';$('#settingTelegram').value=settings.telegram||''}$('#saveSettingsBtn').onclick=()=>{settings={brand:$('#settingBrand').value.trim(),language:$('#settingLanguage').value,email:$('#settingEmail').value.trim(),whatsapp:$('#settingWhatsapp').value.trim(),telegram:$('#settingTelegram').value.trim()};write(KEYS.settings,settings);renderPreview();alert('店铺设置已保存')};
+$$('.nav-item').forEach(b=>b.onclick=()=>{$$('.nav-item').forEach(x=>x.classList.remove('active'));b.classList.add('active');$$('.view').forEach(v=>v.classList.remove('active'));$(`#view-${b.dataset.view}`).classList.add('active');if(b.dataset.view==='products')renderProducts();if(b.dataset.view==='media')renderMedia();if(b.dataset.view==='settings')loadSettings()});
+$$('.device').forEach(b=>b.onclick=()=>{$$('.device').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#previewFrame').style.width=b.dataset.width});
+$('#addSectionBtn').onclick=()=>$('#addSectionDialog').showModal();$$('.close-modal').forEach(b=>b.onclick=()=>b.closest('dialog').close());$('#newProductBtn').onclick=()=>openProduct();$('#productSearch').oninput=renderProducts;$('#categoryFilter').onchange=renderProducts;
+$('#previewBtn').onclick=()=>{const w=open('','_blank');w.document.write(previewDoc());w.document.close()};$('#publishBtn').onclick=()=>alert('这个版本先把“装修体验”做好。你确认好用后，我再把发布接到云端，这样全球客户会看到同样的装修结果。');
+renderLibrary();renderSectionList();renderEditor();renderPreview();renderProducts();renderMedia();loadSettings();
