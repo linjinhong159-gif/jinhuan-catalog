@@ -1,0 +1,35 @@
+{
+  "title": "Home",
+  "slug": "home",
+  "sections": [
+    {
+      "type": "hero",
+      "eyebrow": "THE COLLECTION",
+      "title": "Handbags selected for modern elegance.",
+      "text": "Discover selected handbags, view product details and contact us directly for availability.",
+      "image": "",
+      "button_label": "VIEW COLLECTION",
+      "button_link": "#collection"
+    },
+    {
+      "type": "product_grid",
+      "title": "The Collection",
+      "category": "",
+      "mode": "paginate",
+      "count": 12,
+      "columns": 3
+    },
+    {
+      "type": "editorial",
+      "eyebrow": "ABOUT JINHUAN",
+      "title": "Quiet luxury, thoughtfully selected.",
+      "text": "A product-first catalogue for international clients.",
+      "image": ""
+    },
+    {
+      "type": "contact",
+      "title": "Interested in a product?",
+      "text": "Contact us directly for product details and availability."
+    }
+  ]
+}
