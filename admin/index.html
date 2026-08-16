@@ -3,105 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>JINHUAN 店铺装修</title>
-  <link rel="stylesheet" href="./admin.css">
+  <title>JINHUAN · Puck Visual Editor</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@puckeditor/core@0.21.2/dist/index.css">
+  <link rel="stylesheet" href="./puck-admin.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@19.1.1",
+      "react/": "https://esm.sh/react@19.1.1/",
+      "react-dom": "https://esm.sh/react-dom@19.1.1",
+      "react-dom/": "https://esm.sh/react-dom@19.1.1/",
+      "react-dom/client": "https://esm.sh/react-dom@19.1.1/client",
+      "htm": "https://esm.sh/htm@3.1.1",
+      "@puckeditor/core": "https://esm.sh/@puckeditor/core@0.21.2?external=react,react-dom"
+    }
+  }
+  </script>
 </head>
 <body>
-  <div class="shell">
-    <header class="topbar">
-      <div class="brand"><span class="mark">JH</span><div><strong>JINHUAN</strong><small>店铺装修</small></div></div>
-      <div class="top-actions">
-        <span id="saveState" class="save-state">已保存</span>
-        <a class="btn secondary" href="../" target="_blank">打开前台</a>
-        <button id="previewBtn" class="btn secondary">预览</button>
-        <button id="publishBtn" class="btn primary">发布</button>
-      </div>
-    </header>
-
-    <div class="app">
-      <aside class="nav">
-        <button class="nav-item active" data-view="theme"><span>▦</span><b>装修首页</b></button>
-        <button class="nav-item" data-view="products"><span>▣</span><b>商品管理</b></button>
-        <button class="nav-item" data-view="media"><span>▧</span><b>图片素材</b></button>
-        <button class="nav-item" data-view="settings"><span>⚙</span><b>店铺设置</b></button>
-      </aside>
-
-      <main class="views">
-        <section id="view-theme" class="view active">
-          <div class="theme-layout">
-            <aside class="sections-panel">
-              <div class="panel-title"><div><strong>首页模块</strong><small>拖动调整顺序</small></div><button id="addSectionBtn" class="icon-add">＋</button></div>
-              <div id="sectionList" class="section-list"></div>
-            </aside>
-
-            <section class="preview-panel">
-              <div class="preview-toolbar">
-                <div><strong>首页</strong><span>实时预览</span></div>
-                <div class="device-switch"><button class="device active" data-width="100%">电脑</button><button class="device" data-width="768px">平板</button><button class="device" data-width="390px">手机</button></div>
-              </div>
-              <div class="preview-stage"><iframe id="previewFrame" title="网站预览"></iframe></div>
-            </section>
-
-            <aside class="editor-panel">
-              <div id="emptyEditor" class="empty-editor"><div class="empty-icon">✦</div><strong>选择一个模块</strong><p>点击左侧模块即可修改图片、文字和布局。</p></div>
-              <div id="sectionEditor" hidden></div>
-            </aside>
-          </div>
-        </section>
-
-        <section id="view-products" class="view">
-          <div class="page-head"><div><h1>商品管理</h1><p>新增商品、上传图片、填写尺寸材质，然后直接上架。</p></div><button id="newProductBtn" class="btn primary big">＋ 新增商品</button></div>
-          <div class="product-tools"><input id="productSearch" type="search" placeholder="搜索商品名称或 SKU"><select id="categoryFilter"><option value="all">全部分类</option></select></div>
-          <div id="productList" class="product-grid"></div>
-          <div id="productEmpty" class="empty-box">还没有商品，点击右上角“新增商品”。</div>
-        </section>
-
-        <section id="view-media" class="view">
-          <div class="page-head"><div><h1>图片素材</h1><p>把常用的 Banner、模特图和商品图上传到这里。</p></div><label class="btn primary big">＋ 上传图片<input id="mediaUpload" type="file" accept="image/*" multiple hidden></label></div>
-          <div id="mediaGrid" class="media-grid"></div>
-          <div id="mediaEmpty" class="empty-box">还没有上传图片。</div>
-        </section>
-
-        <section id="view-settings" class="view">
-          <div class="page-head"><div><h1>店铺设置</h1><p>设置品牌名称、联系方式和默认语言。</p></div></div>
-          <div class="settings-card">
-            <label>网站名称<input id="settingBrand" value="JINHUAN"></label>
-            <label>默认语言<select id="settingLanguage"><option value="en">English</option><option value="ru">Русский</option><option value="zh">中文</option></select></label>
-            <label>联系邮箱<input id="settingEmail" placeholder="hello@jinhuan.me"></label>
-            <label>WhatsApp<input id="settingWhatsapp" placeholder="+1 ..."></label>
-            <label>Telegram<input id="settingTelegram" placeholder="@username"></label>
-            <button id="saveSettingsBtn" class="btn primary">保存设置</button>
-          </div>
-        </section>
-      </main>
-    </div>
-  </div>
-
-  <dialog id="addSectionDialog" class="modal compact">
-    <div class="modal-head"><div><h2>添加模块</h2><p>选择一种模块加入首页。</p></div><button class="close-modal">×</button></div>
-    <div id="sectionLibrary" class="section-library"></div>
-  </dialog>
-
-  <dialog id="productDialog" class="modal">
-    <form id="productForm">
-      <div class="modal-head"><div><h2 id="productDialogTitle">新增商品</h2><p>只填客户真正需要看的信息。</p></div><button type="button" class="close-modal">×</button></div>
-      <div class="form-grid">
-        <label class="span-2">商品名称<input id="pName" required placeholder="例如：Quilted Shoulder Bag"></label>
-        <label>SKU<input id="pSku" required placeholder="JH-001"></label>
-        <label>分类<input id="pCategory" placeholder="Shoulder Bag"></label>
-        <label>尺寸<input id="pSize" placeholder="22 × 8 × 14 cm"></label>
-        <label>材质<input id="pMaterial" placeholder="Leather"></label>
-        <label>颜色<input id="pColor" placeholder="Black"></label>
-        <label>状态<select id="pStatus"><option value="active">上架</option><option value="draft">草稿</option></select></label>
-        <label class="span-2">商品描述<textarea id="pDescription" rows="4" placeholder="商品卖点、结构、适用场景等"></textarea></label>
-        <label class="span-2 upload-card">商品主图<input id="pCover" type="file" accept="image/*"><span>点击上传主图</span><img id="coverPreview" alt=""></label>
-      </div>
-      <input id="pId" type="hidden">
-      <div class="modal-actions"><button type="button" class="btn secondary close-modal">取消</button><button class="btn primary" type="submit">保存商品</button></div>
-    </form>
-  </dialog>
-
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
-  <script src="./admin.js"></script>
+  <div id="root"><div style="padding:30px;font-family:Arial">正在加载 Puck 可视化后台…</div></div>
+  <script type="module" src="./puck-app.js"></script>
 </body>
 </html>
