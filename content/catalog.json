@@ -1,0 +1,152 @@
+{
+  "version": 3,
+  "generatedAt": "2026-08-16T14:16:34.635Z",
+  "page": {
+    "title": "Home",
+    "slug": "home",
+    "legacy_content": [
+      {
+        "type": "Announcement",
+        "props": {
+          "id": "ann1",
+          "text": "WORLDWIDE HANDBAG CATALOGUE · DIRECT INQUIRY AVAILABLE"
+        }
+      },
+      {
+        "type": "Header",
+        "props": {
+          "id": "head1",
+          "brand": "JINHUAN",
+          "menu1": "Collection",
+          "menu2": "New Arrivals",
+          "menu3": "About",
+          "menu4": "Contact",
+          "button": "INQUIRE"
+        }
+      },
+      {
+        "type": "CollectionIntro",
+        "props": {
+          "id": "intro1",
+          "eyebrow": "THE COLLECTION",
+          "title": "Handbags selected for modern elegance.",
+          "intro": "Explore our selected handbag catalogue."
+        }
+      },
+      {
+        "type": "CategoryBar",
+        "props": {
+          "id": "cat1",
+          "items": [
+            "ALL",
+            "TOP HANDLE",
+            "SHOULDER",
+            "CROSSBODY",
+            "MINI",
+            "TOTE"
+          ]
+        }
+      },
+      {
+        "type": "ProductGrid",
+        "props": {
+          "id": "grid1",
+          "columns": 3,
+          "count": 9,
+          "ratio": "3/4",
+          "gap": 18
+        }
+      },
+      {
+        "type": "Editorial",
+        "props": {
+          "id": "ed1",
+          "eyebrow": "ABOUT JINHUAN",
+          "title": "Quiet luxury, thoughtfully selected.",
+          "text": "A product-first catalogue for international clients.",
+          "image": ""
+        }
+      },
+      {
+        "type": "Contact",
+        "props": {
+          "id": "contact1",
+          "eyebrow": "CONTACT",
+          "title": "Interested in a product?",
+          "text": "Contact us directly for product details and availability."
+        }
+      },
+      {
+        "type": "Footer",
+        "props": {
+          "id": "foot1",
+          "brand": "JINHUAN",
+          "text": "© 2026 JINHUAN · Global Handbag Catalogue"
+        }
+      }
+    ]
+  },
+  "products": [
+    {
+      "id": "demo2",
+      "name": "Ivory Mini Bag",
+      "sku": "JH-002",
+      "price": 0,
+      "compare_price": null,
+      "currency": "USD",
+      "category": "MINI",
+      "status": "active",
+      "featured": false,
+      "sort_order": 0,
+      "cover": "",
+      "images": [],
+      "size": "19 × 12 × 7 cm",
+      "material": "",
+      "color": "Ivory",
+      "description": ""
+    },
+    {
+      "id": "demo3",
+      "name": "Soft Shoulder Bag",
+      "sku": "JH-003",
+      "price": 0,
+      "compare_price": null,
+      "currency": "USD",
+      "category": "SHOULDER",
+      "status": "active",
+      "featured": false,
+      "sort_order": 0,
+      "cover": "",
+      "images": [],
+      "size": "24 × 16 × 9 cm",
+      "material": "",
+      "color": "Brown",
+      "description": ""
+    },
+    {
+      "id": "demo1",
+      "name": "Structured Top Handle",
+      "sku": "JH-001",
+      "price": 0,
+      "compare_price": null,
+      "currency": "USD",
+      "category": "TOP HANDLE",
+      "status": "active",
+      "featured": false,
+      "sort_order": 0,
+      "cover": "",
+      "images": [],
+      "size": "22 × 14 × 8 cm",
+      "material": "",
+      "color": "Black",
+      "description": ""
+    }
+  ],
+  "categories": [],
+  "settings": {
+    "brand": "JINHUAN",
+    "email": "",
+    "whatsapp": "",
+    "telegram": ""
+  }
+}
