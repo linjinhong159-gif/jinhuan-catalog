@@ -1,9 +1,9 @@
 window.JINHUAN_SQUIDEX = {
-  // 在 Squidex 创建 App 后，把 appName 改成你的 App 名称。
-  // 例如：appName: 'jinhuan-catalog'
-  appName: '',
-  schema: 'products',
+  appName: 'jinhuan-catalog',
+  productsSchema: 'products',
+  settingsSchema: 'site-settings',
   locale: 'en',
-  // 前台只读取已发布内容。建议在 Squidex 为公开网站创建 Reader 匿名客户端。
-  enabled: true
+  enabled: true,
+  // 商品图片存放在 GitHub 仓库 assets/products 下，前台通过 jinhuan.me 自己的域名加载。
+  imageBase: 'https://jinhuan.me/assets/products/'
 };
