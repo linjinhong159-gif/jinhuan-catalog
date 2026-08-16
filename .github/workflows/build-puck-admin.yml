@@ -1,0 +1,54 @@
+name: Build Puck Admin
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'puck-build/**'
+      - 'admin/puck-app.js'
+      - 'admin/puck-admin.css'
+      - '.github/workflows/build-puck-admin.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Prepare source
+        run: |
+          cp admin/puck-app.js puck-build/src/main.js
+          cp admin/puck-admin.css puck-build/src/style.css
+
+      - name: Install dependencies
+        working-directory: puck-build
+        run: npm install
+
+      - name: Build
+        working-directory: puck-build
+        run: npm run build
+
+      - name: Publish built admin
+        run: |
+          rm -rf admin/assets
+          cp puck-build/dist/index.html admin/index.html
+          cp -R puck-build/dist/assets admin/assets
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add admin/index.html admin/assets
+          if git diff --cached --quiet; then
+            echo 'No generated changes.'
+          else
+            git commit -m 'Build bundled Puck visual editor'
+            git push
+          fi
