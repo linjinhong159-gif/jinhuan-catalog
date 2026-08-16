@@ -1,143 +1,57 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="JINHUAN — curated handbags and accessories. Browse collections and contact us for product details." />
-  <meta name="theme-color" content="#f5f1eb" />
-  <title>JINHUAN — Handbag Collection</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="JINHUAN — international handbag catalogue.">
+<title>JINHUAN — Handbag Catalogue</title>
+<style>
+:root{--bg:#f4f0e9;--paper:#fffdf9;--ink:#181714;--muted:#756f66;--line:#d9d1c6;--gold:#9a7752;--dark:#211f1b}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,"Helvetica Neue",sans-serif;line-height:1.55}a{color:inherit;text-decoration:none}.top{background:var(--dark);color:#fff;text-align:center;padding:9px 16px;font-size:11px;letter-spacing:.12em}.header{height:76px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(244,240,233,.96);position:sticky;top:0;z-index:10}.brand{font-family:Georgia,serif;font-size:24px;font-weight:700;letter-spacing:.17em}.nav{display:flex;gap:32px;font-size:13px}.nav a:hover{opacity:.55}.lang{border:1px solid var(--line);background:transparent;padding:8px 11px;cursor:pointer}.hero{min-height:650px;display:grid;grid-template-columns:1.08fr .92fr;border-bottom:1px solid var(--line)}.hero-copy{padding:9vw 7vw;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--gold);font-weight:700;margin:0 0 18px}.hero h1,.section h2,.about h2{font-family:Georgia,serif;font-weight:400;line-height:1.02;margin:0}.hero h1{font-size:clamp(50px,6vw,90px)}.lead{max-width:570px;color:var(--muted);font-size:17px;margin:28px 0}.btn{display:inline-block;background:var(--dark);color:#fff;padding:15px 24px;font-size:13px;letter-spacing:.05em}.visual{position:relative;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 52% 35%,#f4eee5 0,#cabdad 48%,#a99886 100%)}.visual:before{content:"";width:66%;height:74%;border:1px solid rgba(255,255,255,.55);border-radius:50%;position:absolute}.bag{position:relative;width:min(380px,68%);height:330px}.bodybag{position:absolute;left:11%;right:11%;bottom:7%;height:58%;background:#25211e;border-radius:8px 8px 26px 26px;box-shadow:0 30px 70px rgba(30,22,16,.26)}.handle{position:absolute;left:29%;top:12%;width:42%;height:46%;border:17px solid #25211e;border-bottom:0;border-radius:999px 999px 0 0}.clasp{position:absolute;left:47%;bottom:36%;width:7%;height:8%;border-radius:50%;background:#c6a36b}.visual-tag{position:absolute;right:22px;bottom:18px;font-size:10px;letter-spacing:.16em}.benefits{display:grid;grid-template-columns:repeat(3,1fr);background:var(--paper);border-bottom:1px solid var(--line)}.benefits div{padding:27px 5vw;border-right:1px solid var(--line)}.benefits div:last-child{border-right:0}.benefits strong,.benefits span{display:block}.benefits strong{font-size:13px}.benefits span{font-size:12px;color:var(--muted);margin-top:4px}.section{padding:105px 5vw}.section h2,.about h2{font-size:clamp(38px,4.5vw,66px)}.placeholder-grid{margin-top:45px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.card{background:var(--paper);border:1px solid var(--line)}.ph{aspect-ratio:3/4;background:linear-gradient(145deg,#ebe5dc,#d7cdc1);display:grid;place-items:center;color:#9b9185;font-size:12px;letter-spacing:.15em}.cardcopy{padding:18px}.cardcopy strong{font-family:Georgia,serif;font-size:21px;font-weight:400}.cardcopy span{display:block;color:var(--muted);font-size:12px;margin-top:5px}.about{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper)}.about-art{min-height:500px;background:#292622;color:#e5ddd2;display:flex;align-items:flex-end;justify-content:space-between;padding:48px;font-family:Georgia,serif;font-size:clamp(48px,7vw,100px)}.about-copy{padding:8vw 7vw;display:flex;flex-direction:column;justify-content:center}.about-copy p:last-child{color:var(--muted);font-size:16px;max-width:560px;margin-top:26px}.contact{text-align:center;padding:110px 5vw}.contact p{max-width:620px;margin:18px auto 28px;color:var(--muted)}.footer{background:var(--dark);color:#fff;padding:48px 5vw;display:flex;justify-content:space-between;align-items:end}.footer .brand{font-size:clamp(36px,6vw,72px)}.footer small{color:#bdb6ae}.status{display:inline-flex;align-items:center;gap:8px;margin-top:18px;color:#5d7453;font-size:12px}.dot{width:8px;height:8px;border-radius:50%;background:#6f8c63;box-shadow:0 0 0 4px rgba(111,140,99,.13)}
+@media(max-width:850px){.nav{display:none}.hero{grid-template-columns:1fr}.hero-copy{padding:80px 7vw 60px}.visual{min-height:480px}.benefits{grid-template-columns:1fr}.benefits div{border-right:0;border-bottom:1px solid var(--line)}.placeholder-grid{grid-template-columns:1fr 1fr}.about{grid-template-columns:1fr}.about-art{min-height:340px}.footer{gap:30px;flex-direction:column;align-items:flex-start}}
+@media(max-width:520px){.header{height:68px;padding:0 18px}.hero-copy{padding:65px 20px 50px}.visual{min-height:390px}.section{padding:75px 18px}.placeholder-grid{grid-template-columns:1fr}.about-copy{padding:70px 22px}.about-art{padding:28px}.contact{padding:80px 22px}.footer{padding:38px 22px}}
+</style>
 </head>
 <body>
-  <div class="announcement" data-i18n="announcement">Worldwide product catalogue · Contact us for availability</div>
-
-  <header class="site-header">
-    <a class="brand" href="#top" aria-label="JINHUAN home">JINHUAN</a>
-    <nav class="desktop-nav" aria-label="Primary navigation">
-      <a href="#new" data-i18n="navNew">New Arrivals</a>
-      <a href="#catalog" data-i18n="navCatalog">Collection</a>
-      <a href="#about" data-i18n="navAbout">About</a>
-      <a href="#contact" data-i18n="navContact">Contact</a>
-    </nav>
-    <div class="header-actions">
-      <button class="language-button" id="languageButton" type="button" aria-label="Switch language">RU</button>
-      <button class="menu-button" id="menuButton" type="button" aria-label="Open menu">☰</button>
-    </div>
-  </header>
-
-  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
-    <a href="#new" data-i18n="navNew">New Arrivals</a>
-    <a href="#catalog" data-i18n="navCatalog">Collection</a>
-    <a href="#about" data-i18n="navAbout">About</a>
-    <a href="#contact" data-i18n="navContact">Contact</a>
-  </div>
-
-  <main id="top">
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow" data-i18n="heroEyebrow">CURATED HANDBAGS</p>
-        <h1 data-i18n="heroTitle">Quiet elegance,<br>made to be carried.</h1>
-        <p class="hero-text" data-i18n="heroText">Discover our latest handbag collection. Browse every detail and contact us directly for availability, colors and specifications.</p>
-        <a class="primary-button" href="#catalog" data-i18n="browseCollection">Browse collection</a>
-      </div>
-      <div class="hero-art" aria-hidden="true">
-        <div class="hero-bag">
-          <span class="bag-handle"></span>
-          <span class="bag-body"></span>
-          <span class="bag-clasp"></span>
-        </div>
-        <span class="hero-caption">JINHUAN / 2026</span>
-      </div>
-    </section>
-
-    <section class="benefits" aria-label="Store benefits">
-      <div><strong data-i18n="benefitOneTitle">Worldwide viewing</strong><span data-i18n="benefitOneText">Fast, responsive catalogue</span></div>
-      <div><strong data-i18n="benefitTwoTitle">Detailed products</strong><span data-i18n="benefitTwoText">Size · Material · Color · SKU</span></div>
-      <div><strong data-i18n="benefitThreeTitle">Direct inquiry</strong><span data-i18n="benefitThreeText">Ask about any product instantly</span></div>
-    </section>
-
-    <section class="section" id="new">
-      <div class="section-heading split-heading">
-        <div>
-          <p class="eyebrow" data-i18n="newEyebrow">LATEST EDIT</p>
-          <h2 data-i18n="newTitle">New arrivals</h2>
-        </div>
-        <a href="#catalog" class="text-link" data-i18n="viewAll">View all products →</a>
-      </div>
-      <div class="featured-grid" id="featuredGrid"></div>
-    </section>
-
-    <section class="section catalog-section" id="catalog">
-      <div class="section-heading">
-        <p class="eyebrow" data-i18n="catalogEyebrow">THE COLLECTION</p>
-        <h2 data-i18n="catalogTitle">Find your style</h2>
-        <p class="section-description" data-i18n="catalogText">Use category and search to quickly find the product you want.</p>
-      </div>
-
-      <div class="catalog-toolbar">
-        <div class="filters" id="categoryFilters"></div>
-        <label class="search-box">
-          <span aria-hidden="true">⌕</span>
-          <input id="productSearch" type="search" placeholder="Search name or SKU" data-i18n-placeholder="searchPlaceholder" />
-        </label>
-      </div>
-
-      <div class="product-grid" id="productGrid"></div>
-      <p class="empty-state" id="emptyState" hidden data-i18n="emptyState">No products found.</p>
-    </section>
-
-    <section class="editorial" id="about">
-      <div class="editorial-art" aria-hidden="true">
-        <span>01</span><span>JH</span><span>26</span>
-      </div>
-      <div class="editorial-copy">
-        <p class="eyebrow" data-i18n="aboutEyebrow">ABOUT JINHUAN</p>
-        <h2 data-i18n="aboutTitle">A clean way to discover every product.</h2>
-        <p data-i18n="aboutText">JINHUAN is a product-first catalogue created for customers around the world. We focus on clear imagery, useful specifications and direct communication — without a complicated checkout process.</p>
-      </div>
-    </section>
-
-    <section class="contact-section" id="contact">
-      <p class="eyebrow" data-i18n="contactEyebrow">PRODUCT INQUIRY</p>
-      <h2 data-i18n="contactTitle">Interested in a bag?</h2>
-      <p data-i18n="contactText">Open a product and choose “Inquire about this item”. Your preferred contact channel can be added here later.</p>
-      <a class="secondary-button" href="mailto:hello@jinhuan.me" data-i18n="emailUs">Email us</a>
-    </section>
-  </main>
-
-  <footer>
-    <div class="footer-brand">JINHUAN</div>
-    <div class="footer-meta">
-      <span>© <span id="currentYear"></span> JINHUAN</span>
-      <span data-i18n="footerLine">Global product catalogue</span>
-    </div>
-  </footer>
-
-  <dialog class="product-dialog" id="productDialog">
-    <button class="dialog-close" id="dialogClose" type="button" aria-label="Close">×</button>
-    <div class="dialog-layout">
-      <div class="dialog-image-wrap">
-        <img id="dialogImage" alt="" />
-      </div>
-      <div class="dialog-content">
-        <p class="eyebrow" id="dialogCategory"></p>
-        <h2 id="dialogName"></h2>
-        <p class="dialog-description" id="dialogDescription"></p>
-        <dl class="spec-list">
-          <div><dt>SKU</dt><dd id="dialogSku"></dd></div>
-          <div><dt data-i18n="specSize">Size</dt><dd id="dialogSize"></dd></div>
-          <div><dt data-i18n="specMaterial">Material</dt><dd id="dialogMaterial"></dd></div>
-          <div><dt data-i18n="specColor">Color</dt><dd id="dialogColor"></dd></div>
-        </dl>
-        <a class="primary-button inquiry-button" id="dialogInquiry" href="#" data-i18n="inquire">Inquire about this item</a>
-      </div>
-    </div>
-  </dialog>
-
-  <script src="products.js"></script>
-  <script src="app.js"></script>
+<div class="top" id="topline">WORLDWIDE PRODUCT CATALOGUE · PREVIEW SITE</div>
+<header class="header">
+<a class="brand" href="#top">JINHUAN</a>
+<nav class="nav"><a href="#collection" id="nav1">Collection</a><a href="#about" id="nav2">About</a><a href="#contact" id="nav3">Contact</a></nav>
+<button class="lang" id="langBtn" type="button">RU</button>
+</header>
+<main id="top">
+<section class="hero">
+<div class="hero-copy">
+<p class="eyebrow" id="eyebrow">CURATED HANDBAGS</p>
+<h1 id="heroTitle">Quiet elegance,<br>made to be carried.</h1>
+<p class="lead" id="heroText">A clean international catalogue for clients to discover your handbag collections, view details and contact you directly.</p>
+<a class="btn" href="#collection" id="heroBtn">View preview</a>
+<span class="status"><i class="dot"></i><span id="statusText">Website preview is ready</span></span>
+</div>
+<div class="visual" aria-hidden="true"><div class="bag"><span class="handle"></span><span class="bodybag"></span><span class="clasp"></span></div><span class="visual-tag">JINHUAN / 2026</span></div>
+</section>
+<section class="benefits">
+<div><strong id="b1t">Global access</strong><span id="b1s">Designed for overseas customers</span></div>
+<div><strong id="b2t">Product focused</strong><span id="b2s">Clear images, sizes and materials</span></div>
+<div><strong id="b3t">Direct inquiry</strong><span id="b3s">No checkout or payment required</span></div>
+</section>
+<section class="section" id="collection">
+<p class="eyebrow" id="collectionEyebrow">COLLECTION PREVIEW</p>
+<h2 id="collectionTitle">Products will appear here.</h2>
+<div class="placeholder-grid">
+<div class="card"><div class="ph">PRODUCT IMAGE</div><div class="cardcopy"><strong>Handbag Collection</strong><span>SKU · Size · Material · Color</span></div></div>
+<div class="card"><div class="ph">PRODUCT IMAGE</div><div class="cardcopy"><strong>Shoulder Collection</strong><span>SKU · Size · Material · Color</span></div></div>
+<div class="card"><div class="ph">PRODUCT IMAGE</div><div class="cardcopy"><strong>Crossbody Collection</strong><span>SKU · Size · Material · Color</span></div></div>
+</div>
+</section>
+<section class="about" id="about"><div class="about-art"><span>JH</span><span>26</span></div><div class="about-copy"><p class="eyebrow" id="aboutEyebrow">ABOUT THE SITE</p><h2 id="aboutTitle">Simple, visual, international.</h2><p id="aboutText">This first version is intentionally lightweight. Later we can add your real products, categories, search, Russian and English product descriptions, and direct inquiry buttons without adding a payment system.</p></div></section>
+<section class="contact" id="contact"><p class="eyebrow" id="contactEyebrow">CONTACT</p><h2 style="font-family:Georgia,serif;font-size:clamp(38px,4.5vw,66px);font-weight:400;margin:0" id="contactTitle">Ready for your catalogue.</h2><p id="contactText">Contact information will be added after you confirm the visual direction.</p></section>
+</main>
+<footer class="footer"><div class="brand">JINHUAN</div><small>© 2026 JINHUAN · Global Product Catalogue</small></footer>
+<script>
+const en={topline:'WORLDWIDE PRODUCT CATALOGUE · PREVIEW SITE',nav1:'Collection',nav2:'About',nav3:'Contact',eyebrow:'CURATED HANDBAGS',heroTitle:'Quiet elegance,<br>made to be carried.',heroText:'A clean international catalogue for clients to discover your handbag collections, view details and contact you directly.',heroBtn:'View preview',statusText:'Website preview is ready',b1t:'Global access',b1s:'Designed for overseas customers',b2t:'Product focused',b2s:'Clear images, sizes and materials',b3t:'Direct inquiry',b3s:'No checkout or payment required',collectionEyebrow:'COLLECTION PREVIEW',collectionTitle:'Products will appear here.',aboutEyebrow:'ABOUT THE SITE',aboutTitle:'Simple, visual, international.',aboutText:'This first version is intentionally lightweight. Later we can add your real products, categories, search, Russian and English product descriptions, and direct inquiry buttons without adding a payment system.',contactEyebrow:'CONTACT',contactTitle:'Ready for your catalogue.',contactText:'Contact information will be added after you confirm the visual direction.'};
+const ru={topline:'МЕЖДУНАРОДНЫЙ КАТАЛОГ · ПРЕДВАРИТЕЛЬНАЯ ВЕРСИЯ',nav1:'Коллекция',nav2:'О нас',nav3:'Контакты',eyebrow:'КОЛЛЕКЦИЯ СУМОК',heroTitle:'Сдержанная элегантность,<br>которую хочется носить.',heroText:'Лаконичный международный каталог, где клиенты смогут увидеть коллекции, характеристики и напрямую связаться с вами.',heroBtn:'Посмотреть',statusText:'Предварительная версия готова',b1t:'Доступ по всему миру',b1s:'Для международных клиентов',b2t:'Фокус на товаре',b2s:'Фото, размеры и материалы',b3t:'Прямой запрос',b3s:'Без оплаты и оформления заказа',collectionEyebrow:'ПРЕДВАРИТЕЛЬНАЯ КОЛЛЕКЦИЯ',collectionTitle:'Здесь будут ваши товары.',aboutEyebrow:'О САЙТЕ',aboutTitle:'Просто, визуально, международно.',aboutText:'Первая версия специально сделана лёгкой. После подтверждения дизайна можно добавить реальные товары, категории, поиск, русский и английский языки и кнопки для прямого запроса без платёжной системы.',contactEyebrow:'КОНТАКТЫ',contactTitle:'Готово для вашего каталога.',contactText:'Контактные данные добавим после утверждения визуального направления.'};
+let locale='en';document.getElementById('langBtn').onclick=()=>{locale=locale==='en'?'ru':'en';const d=locale==='en'?en:ru;Object.entries(d).forEach(([k,v])=>{const el=document.getElementById(k);if(el)el.innerHTML=v});document.getElementById('langBtn').textContent=locale==='en'?'RU':'EN';document.documentElement.lang=locale};
+</script>
 </body>
 </html>
