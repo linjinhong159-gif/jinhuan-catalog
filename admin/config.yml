@@ -1,0 +1,173 @@
+backend:
+  name: test-repo
+
+site_url: https://jinhuan.me
+display_url: https://jinhuan.me
+logo_url: https://jinhuan.me/favicon.ico
+publish_mode: simple
+media_folder: "assets/products"
+public_folder: "/assets/products"
+show_preview_links: false
+
+collections:
+  - name: "products"
+    label: "商品管理"
+    label_singular: "商品"
+    folder: "content/products"
+    create: true
+    delete: true
+    format: "json"
+    extension: "json"
+    slug: "{{fields.sku}}"
+    identifier_field: "sku"
+    summary: "{{fields.name}} · {{fields.price}} {{fields.currency}}"
+    sortable_fields: ["name", "sku", "price", "category", "sort_order"]
+    view_filters:
+      - label: "已上架"
+        field: "status"
+        pattern: "active"
+      - label: "草稿"
+        field: "status"
+        pattern: "draft"
+    fields:
+      - { label: "商品名称", name: "name", widget: "string" }
+      - { label: "SKU", name: "sku", widget: "string", hint: "例如 JH-001" }
+      - { label: "价格", name: "price", widget: "number", default: 0 }
+      - { label: "原价 / 划线价", name: "compare_price", widget: "number", required: false }
+      - label: "币种"
+        name: "currency"
+        widget: "select"
+        default: "USD"
+        options: ["USD", "EUR", "GBP", "RUB"]
+      - { label: "分类 / 品牌", name: "category", widget: "string", hint: "例如 HERMES / LV / CHANEL" }
+      - label: "状态"
+        name: "status"
+        widget: "select"
+        default: "active"
+        options:
+          - { label: "上架", value: "active" }
+          - { label: "草稿", value: "draft" }
+      - { label: "首页推荐", name: "featured", widget: "boolean", default: false }
+      - { label: "排序", name: "sort_order", widget: "number", default: 0 }
+      - { label: "主图", name: "cover", widget: "image", choose_url: true }
+      - label: "商品详情图片"
+        name: "images"
+        widget: "list"
+        label_singular: "图片"
+        allow_add: true
+        allow_remove: true
+        allow_reorder: true
+        field: { label: "图片", name: "image", widget: "image", choose_url: true }
+      - { label: "尺寸", name: "size", widget: "string", required: false }
+      - { label: "材质", name: "material", widget: "string", required: false }
+      - { label: "颜色", name: "color", widget: "string", required: false }
+      - { label: "商品描述", name: "description", widget: "markdown", required: false }
+
+  - name: "categories"
+    label: "分类管理"
+    label_singular: "分类"
+    folder: "content/categories"
+    create: true
+    delete: true
+    format: "json"
+    extension: "json"
+    slug: "{{slug}}"
+    identifier_field: "name"
+    summary: "{{fields.name}}"
+    fields:
+      - { label: "分类名称", name: "name", widget: "string" }
+      - { label: "显示顺序", name: "sort_order", widget: "number", default: 0 }
+      - { label: "分类封面", name: "image", widget: "image", required: false }
+      - { label: "分类说明", name: "description", widget: "text", required: false }
+
+  - name: "pages"
+    label: "页面装修"
+    label_singular: "页面"
+    folder: "content/pages"
+    create: true
+    delete: true
+    format: "json"
+    extension: "json"
+    slug: "{{slug}}"
+    identifier_field: "title"
+    fields:
+      - { label: "页面名称", name: "title", widget: "string" }
+      - { label: "页面路径", name: "slug", widget: "string", hint: "例如 home / about" }
+      - label: "页面模块"
+        name: "sections"
+        widget: "list"
+        allow_add: true
+        allow_remove: true
+        allow_reorder: true
+        types:
+          - label: "首屏大图 Hero"
+            name: "hero"
+            widget: "object"
+            summary: "Hero · {{fields.title}}"
+            fields:
+              - { label: "小标题", name: "eyebrow", widget: "string", required: false }
+              - { label: "大标题", name: "title", widget: "string" }
+              - { label: "说明", name: "text", widget: "text", required: false }
+              - { label: "背景图片", name: "image", widget: "image", required: false }
+              - { label: "按钮文字", name: "button_label", widget: "string", required: false }
+              - { label: "按钮链接", name: "button_link", widget: "string", required: false }
+          - label: "商品区"
+            name: "product_grid"
+            widget: "object"
+            summary: "商品区 · {{fields.title}}"
+            fields:
+              - { label: "标题", name: "title", widget: "string", required: false }
+              - { label: "限定分类", name: "category", widget: "string", required: false, hint: "留空表示全部" }
+              - label: "展示方式"
+                name: "mode"
+                widget: "select"
+                default: "paginate"
+                options:
+                  - { label: "分页", value: "paginate" }
+                  - { label: "全部展示", value: "all" }
+                  - { label: "指定数量", value: "limit" }
+              - { label: "每页 / 展示数量", name: "count", widget: "number", default: 12 }
+              - { label: "每行商品数量", name: "columns", widget: "number", default: 3, min: 2, max: 5 }
+          - label: "图片模块"
+            name: "image"
+            widget: "object"
+            summary: "图片模块"
+            fields:
+              - { label: "图片", name: "image", widget: "image" }
+              - { label: "说明", name: "caption", widget: "string", required: false }
+              - { label: "链接", name: "link", widget: "string", required: false }
+          - label: "图文模块"
+            name: "editorial"
+            widget: "object"
+            summary: "图文 · {{fields.title}}"
+            fields:
+              - { label: "小标题", name: "eyebrow", widget: "string", required: false }
+              - { label: "标题", name: "title", widget: "string" }
+              - { label: "正文", name: "text", widget: "text" }
+              - { label: "图片", name: "image", widget: "image", required: false }
+          - label: "联系模块"
+            name: "contact"
+            widget: "object"
+            summary: "联系 · {{fields.title}}"
+            fields:
+              - { label: "标题", name: "title", widget: "string" }
+              - { label: "说明", name: "text", widget: "text", required: false }
+
+  - name: "store_settings"
+    label: "店铺设置"
+    label_singular: "设置"
+    folder: "content/store-settings"
+    create: true
+    delete: true
+    format: "json"
+    extension: "json"
+    slug: "{{slug}}"
+    identifier_field: "name"
+    fields:
+      - { label: "设置名称", name: "name", widget: "string", default: "Main Store" }
+      - { label: "网站名称", name: "brand", widget: "string", default: "JINHUAN" }
+      - { label: "联系邮箱", name: "email", widget: "string", required: false }
+      - { label: "WhatsApp 链接", name: "whatsapp", widget: "string", required: false }
+      - { label: "Telegram 链接", name: "telegram", widget: "string", required: false }
+      - { label: "货币", name: "currency", widget: "select", default: "USD", options: ["USD", "EUR", "GBP", "RUB"] }
+      - { label: "每页商品数", name: "products_per_page", widget: "number", default: 24 }
