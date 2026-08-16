@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="JINHUAN — curated handbags and accessories. Browse collections and contact us for product details." />
+  <meta name="theme-color" content="#f5f1eb" />
+  <title>JINHUAN — Handbag Collection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="announcement" data-i18n="announcement">Worldwide product catalogue · Contact us for availability</div>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="JINHUAN home">JINHUAN</a>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <a href="#new" data-i18n="navNew">New Arrivals</a>
+      <a href="#catalog" data-i18n="navCatalog">Collection</a>
+      <a href="#about" data-i18n="navAbout">About</a>
+      <a href="#contact" data-i18n="navContact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <button class="language-button" id="languageButton" type="button" aria-label="Switch language">RU</button>
+      <button class="menu-button" id="menuButton" type="button" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <a href="#new" data-i18n="navNew">New Arrivals</a>
+    <a href="#catalog" data-i18n="navCatalog">Collection</a>
+    <a href="#about" data-i18n="navAbout">About</a>
+    <a href="#contact" data-i18n="navContact">Contact</a>
+  </div>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow" data-i18n="heroEyebrow">CURATED HANDBAGS</p>
+        <h1 data-i18n="heroTitle">Quiet elegance,<br>made to be carried.</h1>
+        <p class="hero-text" data-i18n="heroText">Discover our latest handbag collection. Browse every detail and contact us directly for availability, colors and specifications.</p>
+        <a class="primary-button" href="#catalog" data-i18n="browseCollection">Browse collection</a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="hero-bag">
+          <span class="bag-handle"></span>
+          <span class="bag-body"></span>
+          <span class="bag-clasp"></span>
+        </div>
+        <span class="hero-caption">JINHUAN / 2026</span>
+      </div>
+    </section>
+
+    <section class="benefits" aria-label="Store benefits">
+      <div><strong data-i18n="benefitOneTitle">Worldwide viewing</strong><span data-i18n="benefitOneText">Fast, responsive catalogue</span></div>
+      <div><strong data-i18n="benefitTwoTitle">Detailed products</strong><span data-i18n="benefitTwoText">Size · Material · Color · SKU</span></div>
+      <div><strong data-i18n="benefitThreeTitle">Direct inquiry</strong><span data-i18n="benefitThreeText">Ask about any product instantly</span></div>
+    </section>
+
+    <section class="section" id="new">
+      <div class="section-heading split-heading">
+        <div>
+          <p class="eyebrow" data-i18n="newEyebrow">LATEST EDIT</p>
+          <h2 data-i18n="newTitle">New arrivals</h2>
+        </div>
+        <a href="#catalog" class="text-link" data-i18n="viewAll">View all products →</a>
+      </div>
+      <div class="featured-grid" id="featuredGrid"></div>
+    </section>
+
+    <section class="section catalog-section" id="catalog">
+      <div class="section-heading">
+        <p class="eyebrow" data-i18n="catalogEyebrow">THE COLLECTION</p>
+        <h2 data-i18n="catalogTitle">Find your style</h2>
+        <p class="section-description" data-i18n="catalogText">Use category and search to quickly find the product you want.</p>
+      </div>
+
+      <div class="catalog-toolbar">
+        <div class="filters" id="categoryFilters"></div>
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <input id="productSearch" type="search" placeholder="Search name or SKU" data-i18n-placeholder="searchPlaceholder" />
+        </label>
+      </div>
+
+      <div class="product-grid" id="productGrid"></div>
+      <p class="empty-state" id="emptyState" hidden data-i18n="emptyState">No products found.</p>
+    </section>
+
+    <section class="editorial" id="about">
+      <div class="editorial-art" aria-hidden="true">
+        <span>01</span><span>JH</span><span>26</span>
+      </div>
+      <div class="editorial-copy">
+        <p class="eyebrow" data-i18n="aboutEyebrow">ABOUT JINHUAN</p>
+        <h2 data-i18n="aboutTitle">A clean way to discover every product.</h2>
+        <p data-i18n="aboutText">JINHUAN is a product-first catalogue created for customers around the world. We focus on clear imagery, useful specifications and direct communication — without a complicated checkout process.</p>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+      <p class="eyebrow" data-i18n="contactEyebrow">PRODUCT INQUIRY</p>
+      <h2 data-i18n="contactTitle">Interested in a bag?</h2>
+      <p data-i18n="contactText">Open a product and choose “Inquire about this item”. Your preferred contact channel can be added here later.</p>
+      <a class="secondary-button" href="mailto:hello@jinhuan.me" data-i18n="emailUs">Email us</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand">JINHUAN</div>
+    <div class="footer-meta">
+      <span>© <span id="currentYear"></span> JINHUAN</span>
+      <span data-i18n="footerLine">Global product catalogue</span>
+    </div>
+  </footer>
+
+  <dialog class="product-dialog" id="productDialog">
+    <button class="dialog-close" id="dialogClose" type="button" aria-label="Close">×</button>
+    <div class="dialog-layout">
+      <div class="dialog-image-wrap">
+        <img id="dialogImage" alt="" />
+      </div>
+      <div class="dialog-content">
+        <p class="eyebrow" id="dialogCategory"></p>
+        <h2 id="dialogName"></h2>
+        <p class="dialog-description" id="dialogDescription"></p>
+        <dl class="spec-list">
+          <div><dt>SKU</dt><dd id="dialogSku"></dd></div>
+          <div><dt data-i18n="specSize">Size</dt><dd id="dialogSize"></dd></div>
+          <div><dt data-i18n="specMaterial">Material</dt><dd id="dialogMaterial"></dd></div>
+          <div><dt data-i18n="specColor">Color</dt><dd id="dialogColor"></dd></div>
+        </dl>
+        <a class="primary-button inquiry-button" id="dialogInquiry" href="#" data-i18n="inquire">Inquire about this item</a>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="products.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
