@@ -5,13 +5,10 @@ WORKSPACE_ROOT="$(pwd)"
 RUNTIME_DIR="${SILEX_RUNTIME_DIR:-.silex-runtime}"
 PNPM="npx --yes pnpm@10"
 
-# Codespaces should save Silex projects directly in this GitHub workspace.
-# This avoids the default FTP login screen.
-export STORAGE_CONNECTORS="fs"
-export HOSTING_CONNECTORS="download"
-export SILEX_FS_ROOT="${SILEX_FS_ROOT:-$WORKSPACE_ROOT/silex-workspaces/storage}"
-export SILEX_FS_HOSTING_ROOT="${SILEX_FS_HOSTING_ROOT:-$WORKSPACE_ROOT/silex-workspaces/hosting}"
-mkdir -p "$SILEX_FS_ROOT" "$SILEX_FS_HOSTING_ROOT"
+# Keep Silex project files inside this GitHub Codespace workspace.
+FS_STORAGE_ROOT="${SILEX_FS_ROOT:-$WORKSPACE_ROOT/silex-workspaces/storage}"
+FS_HOSTING_ROOT="${SILEX_FS_HOSTING_ROOT:-$WORKSPACE_ROOT/silex-workspaces/hosting}"
+mkdir -p "$FS_STORAGE_ROOT" "$FS_HOSTING_ROOT"
 
 if [ ! -d "$RUNTIME_DIR/.git" ]; then
   echo "[JINHUAN] Downloading the current Silex V3 source..."
@@ -22,6 +19,20 @@ else
 fi
 
 cd "$RUNTIME_DIR"
+
+# Silex's default SaaS config reads these values from process.env and .env.
+# Write both so Codespaces cannot fall back to the FTP defaults.
+cat > .env <<EOF
+STORAGE_CONNECTORS=fs
+HOSTING_CONNECTORS=fs,download
+SILEX_FS_ROOT=$FS_STORAGE_ROOT
+SILEX_FS_HOSTING_ROOT=$FS_HOSTING_ROOT
+EOF
+
+export STORAGE_CONNECTORS="fs"
+export HOSTING_CONNECTORS="fs,download"
+export SILEX_FS_ROOT="$FS_STORAGE_ROOT"
+export SILEX_FS_HOSTING_ROOT="$FS_HOSTING_ROOT"
 
 echo "[JINHUAN] Using pnpm without global installation..."
 $PNPM --version
@@ -37,6 +48,13 @@ if [ ! -f .jinhuan-built ]; then
   touch .jinhuan-built
 fi
 
-echo "[JINHUAN] Storage: filesystem -> $SILEX_FS_ROOT"
+echo "[JINHUAN] STORAGE_CONNECTORS=$STORAGE_CONNECTORS"
+echo "[JINHUAN] HOSTING_CONNECTORS=$HOSTING_CONNECTORS"
+echo "[JINHUAN] Storage root: $SILEX_FS_ROOT"
 echo "[JINHUAN] Starting Silex on port 6805..."
-exec $PNPM start
+exec env \
+  STORAGE_CONNECTORS="$STORAGE_CONNECTORS" \
+  HOSTING_CONNECTORS="$HOSTING_CONNECTORS" \
+  SILEX_FS_ROOT="$SILEX_FS_ROOT" \
+  SILEX_FS_HOSTING_ROOT="$SILEX_FS_HOSTING_ROOT" \
+  $PNPM start
