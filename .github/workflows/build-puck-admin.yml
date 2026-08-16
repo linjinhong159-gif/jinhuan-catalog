@@ -7,6 +7,7 @@ on:
       - 'puck-build/**'
       - 'admin/puck-app.js'
       - 'admin/puck-admin.css'
+      - 'admin/puck-extra.css'
       - '.github/workflows/build-puck-admin.yml'
   workflow_dispatch:
 
@@ -29,6 +30,7 @@ jobs:
         run: |
           cp admin/puck-app.js puck-build/src/main.js
           cp admin/puck-admin.css puck-build/src/style.css
+          cat admin/puck-extra.css >> puck-build/src/style.css
 
       - name: Install dependencies
         working-directory: puck-build
