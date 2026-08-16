@@ -1,0 +1,124 @@
+media:
+  input: media
+  output: /media
+  rename: safe
+  categories: [image]
+
+content:
+  - name: site
+    label: 网站装修
+    type: file
+    path: content/site.json
+    format: json
+    fields:
+      - name: brand
+        label: 网站名称
+        type: string
+      - name: theme
+        label: 主题颜色
+        type: object
+        fields:
+          - name: background
+            label: 页面背景色
+            type: string
+          - name: paper
+            label: 卡片背景色
+            type: string
+          - name: text
+            label: 主文字颜色
+            type: string
+          - name: muted
+            label: 次要文字颜色
+            type: string
+          - name: accent
+            label: 强调色
+            type: string
+          - name: dark
+            label: 深色区域
+            type: string
+      - name: layout
+        label: 首页模块
+        type: object
+        fields:
+          - name: hero_image
+            label: 首页主视觉图片（可选）
+            type: image
+            required: false
+          - name: show_benefits
+            label: 显示三大卖点
+            type: boolean
+          - name: show_collection
+            label: 显示商品预览
+            type: boolean
+          - name: show_about
+            label: 显示关于我们
+            type: boolean
+          - name: show_contact
+            label: 显示联系我们
+            type: boolean
+      - name: en
+        label: 英文内容
+        type: object
+        fields:
+          - { name: topline, label: 顶部公告, type: string }
+          - { name: nav_collection, label: 导航-商品, type: string }
+          - { name: nav_about, label: 导航-关于, type: string }
+          - { name: nav_contact, label: 导航-联系, type: string }
+          - { name: hero_eyebrow, label: 首页小标题, type: string }
+          - { name: hero_title, label: 首页主标题, type: text }
+          - { name: hero_text, label: 首页说明, type: text }
+          - { name: hero_button, label: 首页按钮, type: string }
+          - { name: status_text, label: 状态文字, type: string }
+          - { name: benefit_1_title, label: 卖点1标题, type: string }
+          - { name: benefit_1_text, label: 卖点1说明, type: string }
+          - { name: benefit_2_title, label: 卖点2标题, type: string }
+          - { name: benefit_2_text, label: 卖点2说明, type: string }
+          - { name: benefit_3_title, label: 卖点3标题, type: string }
+          - { name: benefit_3_text, label: 卖点3说明, type: string }
+          - { name: collection_eyebrow, label: 商品区小标题, type: string }
+          - { name: collection_title, label: 商品区标题, type: string }
+          - { name: card_1_title, label: 预览卡1标题, type: string }
+          - { name: card_2_title, label: 预览卡2标题, type: string }
+          - { name: card_3_title, label: 预览卡3标题, type: string }
+          - { name: about_eyebrow, label: 关于小标题, type: string }
+          - { name: about_title, label: 关于标题, type: string }
+          - { name: about_text, label: 关于说明, type: text }
+          - { name: contact_eyebrow, label: 联系小标题, type: string }
+          - { name: contact_title, label: 联系标题, type: string }
+          - { name: contact_text, label: 联系说明, type: text }
+      - name: ru
+        label: 俄文内容
+        type: object
+        fields:
+          - { name: topline, label: 顶部公告, type: string }
+          - { name: nav_collection, label: 导航-商品, type: string }
+          - { name: nav_about, label: 导航-关于, type: string }
+          - { name: nav_contact, label: 导航-联系, type: string }
+          - { name: hero_eyebrow, label: 首页小标题, type: string }
+          - { name: hero_title, label: 首页主标题, type: text }
+          - { name: hero_text, label: 首页说明, type: text }
+          - { name: hero_button, label: 首页按钮, type: string }
+          - { name: status_text, label: 状态文字, type: string }
+          - { name: benefit_1_title, label: 卖点1标题, type: string }
+          - { name: benefit_1_text, label: 卖点1说明, type: string }
+          - { name: benefit_2_title, label: 卖点2标题, type: string }
+          - { name: benefit_2_text, label: 卖点2说明, type: string }
+          - { name: benefit_3_title, label: 卖点3标题, type: string }
+          - { name: benefit_3_text, label: 卖点3说明, type: string }
+          - { name: collection_eyebrow, label: 商品区小标题, type: string }
+          - { name: collection_title, label: 商品区标题, type: string }
+          - { name: card_1_title, label: 预览卡1标题, type: string }
+          - { name: card_2_title, label: 预览卡2标题, type: string }
+          - { name: card_3_title, label: 预览卡3标题, type: string }
+          - { name: about_eyebrow, label: 关于小标题, type: string }
+          - { name: about_title, label: 关于标题, type: string }
+          - { name: about_text, label: 关于说明, type: text }
+          - { name: contact_eyebrow, label: 联系小标题, type: string }
+          - { name: contact_title, label: 联系标题, type: string }
+          - { name: contact_text, label: 联系说明, type: text }
+
+  - name: advanced_layout
+    label: 高级排版（代码）
+    type: file
+    path: index.html
+    format: code
