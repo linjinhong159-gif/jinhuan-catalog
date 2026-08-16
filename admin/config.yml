@@ -1,7 +1,6 @@
 backend:
   name: git-gateway
   branch: main
-  gateway_url: https://earnest-kitsune-1f3282.netlify.app/.netlify/git/git-gateway
 
 site_url: https://jinhuan.me
 display_url: https://jinhuan.me
