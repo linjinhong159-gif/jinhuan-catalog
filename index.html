@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="JINHUAN — international handbag catalogue.">
 <title>JINHUAN — Handbag Catalogue</title>
+<script>
+(function () {
+  var hash = window.location.hash || '';
+  if (/^#(?:invite_token|confirmation_token|recovery_token|email_change_token)=/.test(hash)) {
+    window.location.replace('/admin/' + hash);
+  }
+})();
+</script>
 <link rel="stylesheet" href="./site.css">
 <link rel="stylesheet" href="./site-modal.css">
 </head>
