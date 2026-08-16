@@ -1,6 +1,13 @@
 (function(){
   function v(entry,key,fallback){var x=entry.getIn(['data',key]);return x===undefined||x===null||x===''?fallback:x}
-  function asset(props,value){if(!value)return '';try{var a=props.getAsset(value);return a&&a.toString?a.toString():String(a||'')}catch(e){return String(value||'')}}
+  function asset(props,value){
+    if(!value)return '';
+    try{
+      // Keep Decap's AssetProxy intact. It resolves to an in-memory blob for a
+      // newly selected local image and to the published URL after it is saved.
+      return props.getAsset(value)||value;
+    }catch(e){return value||''}
+  }
   function currency(code){return ({USD:'$',EUR:'€',GBP:'£',RUB:'₽'})[code]||((code||'USD')+' ')}
   function arr(value){if(!value)return [];try{return value.toJS?value.toJS():Array.isArray(value)?value:[]}catch(e){return []}}
 
@@ -9,7 +16,7 @@
       var e=this.props.entry;
       var cover=v(e,'cover','');
       var images=arr(e.getIn(['data','images']));
-      var all=[cover].concat(images).filter(Boolean);
+      var all=[cover].concat(images.map(function(x){return x&&x.image?x.image:x})).filter(Boolean);
       var title=v(e,'name','商品名称');
       var price=Number(v(e,'price',0));
       var compare=Number(v(e,'compare_price',0));
