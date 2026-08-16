@@ -1,0 +1,9 @@
+{
+  "name": "jinhuan-silex-v3-workspace",
+  "private": true,
+  "description": "JINHUAN visual storefront workspace using Silex V3, Squidex and GitHub Pages.",
+  "scripts": {
+    "start": "bash scripts/start-silex.sh",
+    "silex": "bash scripts/start-silex.sh"
+  }
+}

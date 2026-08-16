@@ -1,0 +1,22 @@
+name: Silex V3 setup check
+
+on:
+  push:
+    branches:
+      - silex-v3
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Silex V3
+        run: npm install
+      - name: Verify Silex CLI
+        run: npx silex --help
