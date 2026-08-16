@@ -1,14 +1,6 @@
-name: Build Puck Admin
+name: Build Puck Admin (manual backup)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'puck-build/**'
-      - 'admin/puck-app.js'
-      - 'admin/puck-admin.css'
-      - 'admin/puck-extra.css'
-      - '.github/workflows/build-puck-admin.yml'
   workflow_dispatch:
 
 permissions:
@@ -40,17 +32,18 @@ jobs:
         working-directory: puck-build
         run: npm run build
 
-      - name: Publish built admin
+      - name: Publish Puck backup bundle
         run: |
-          rm -rf admin/assets
-          cp puck-build/dist/index.html admin/index.html
-          cp -R puck-build/dist/assets admin/assets
+          rm -rf puck-admin-backup
+          mkdir -p puck-admin-backup
+          cp puck-build/dist/index.html puck-admin-backup/index.html
+          cp -R puck-build/dist/assets puck-admin-backup/assets
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add admin/index.html admin/assets
+          git add puck-admin-backup
           if git diff --cached --quiet; then
             echo 'No generated changes.'
           else
-            git commit -m 'Build bundled Puck visual editor'
+            git commit -m 'Build Puck backup editor'
             git push
           fi
