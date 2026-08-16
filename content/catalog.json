@@ -1,88 +1,38 @@
 {
   "version": 3,
-  "generatedAt": "2026-08-16T14:16:34.635Z",
+  "generatedAt": "2026-08-16T14:16:55.599Z",
   "page": {
     "title": "Home",
     "slug": "home",
-    "legacy_content": [
+    "sections": [
       {
-        "type": "Announcement",
-        "props": {
-          "id": "ann1",
-          "text": "WORLDWIDE HANDBAG CATALOGUE · DIRECT INQUIRY AVAILABLE"
-        }
+        "type": "hero",
+        "eyebrow": "THE COLLECTION",
+        "title": "Handbags selected for modern elegance.",
+        "text": "Discover selected handbags, view product details and contact us directly for availability.",
+        "image": "",
+        "button_label": "VIEW COLLECTION",
+        "button_link": "#collection"
       },
       {
-        "type": "Header",
-        "props": {
-          "id": "head1",
-          "brand": "JINHUAN",
-          "menu1": "Collection",
-          "menu2": "New Arrivals",
-          "menu3": "About",
-          "menu4": "Contact",
-          "button": "INQUIRE"
-        }
+        "type": "product_grid",
+        "title": "The Collection",
+        "category": "",
+        "mode": "paginate",
+        "count": 12,
+        "columns": 3
       },
       {
-        "type": "CollectionIntro",
-        "props": {
-          "id": "intro1",
-          "eyebrow": "THE COLLECTION",
-          "title": "Handbags selected for modern elegance.",
-          "intro": "Explore our selected handbag catalogue."
-        }
+        "type": "editorial",
+        "eyebrow": "ABOUT JINHUAN",
+        "title": "Quiet luxury, thoughtfully selected.",
+        "text": "A product-first catalogue for international clients.",
+        "image": ""
       },
       {
-        "type": "CategoryBar",
-        "props": {
-          "id": "cat1",
-          "items": [
-            "ALL",
-            "TOP HANDLE",
-            "SHOULDER",
-            "CROSSBODY",
-            "MINI",
-            "TOTE"
-          ]
-        }
-      },
-      {
-        "type": "ProductGrid",
-        "props": {
-          "id": "grid1",
-          "columns": 3,
-          "count": 9,
-          "ratio": "3/4",
-          "gap": 18
-        }
-      },
-      {
-        "type": "Editorial",
-        "props": {
-          "id": "ed1",
-          "eyebrow": "ABOUT JINHUAN",
-          "title": "Quiet luxury, thoughtfully selected.",
-          "text": "A product-first catalogue for international clients.",
-          "image": ""
-        }
-      },
-      {
-        "type": "Contact",
-        "props": {
-          "id": "contact1",
-          "eyebrow": "CONTACT",
-          "title": "Interested in a product?",
-          "text": "Contact us directly for product details and availability."
-        }
-      },
-      {
-        "type": "Footer",
-        "props": {
-          "id": "foot1",
-          "brand": "JINHUAN",
-          "text": "© 2026 JINHUAN · Global Handbag Catalogue"
-        }
+        "type": "contact",
+        "title": "Interested in a product?",
+        "text": "Contact us directly for product details and availability."
       }
     ]
   },
@@ -144,9 +94,12 @@
   ],
   "categories": [],
   "settings": {
+    "name": "Main Store",
     "brand": "JINHUAN",
     "email": "",
     "whatsapp": "",
-    "telegram": ""
+    "telegram": "",
+    "currency": "USD",
+    "products_per_page": 24
   }
 }
