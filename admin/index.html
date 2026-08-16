@@ -1,13 +1,23 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JINHUAN · Puck Visual Editor</title>
-  <script type="module" crossorigin src="./assets/index-D8ieSWUq.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-kK4JA0jU.css">
+  <meta name="robots" content="noindex" />
+  <title>JINHUAN · Decap CMS</title>
+  <style>
+    html,body{margin:0;min-height:100%;background:#f6f3ee;font-family:Arial,"Microsoft YaHei",sans-serif}
+    .jh-decap-top{height:54px;background:#151412;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 18px;gap:16px;position:sticky;top:0;z-index:9999}
+    .jh-decap-brand{display:flex;align-items:center;gap:10px}.jh-decap-mark{width:30px;height:30px;border-radius:8px;background:#fff;color:#111;display:grid;place-items:center;font-size:10px;font-weight:800}.jh-decap-brand strong{display:block;font-size:13px}.jh-decap-brand small{display:block;color:#aaa;font-size:10px;margin-top:2px}.jh-decap-actions{display:flex;align-items:center;gap:8px}.jh-decap-actions a{color:#fff;text-decoration:none;border:1px solid #4a4742;border-radius:7px;padding:7px 10px;font-size:11px}.jh-demo{color:#d9b98c;font-size:11px}.jh-note{background:#fff4db;color:#5d4a22;border-bottom:1px solid #ead6a6;padding:9px 18px;font-size:12px}.jh-note b{font-weight:800}#nc-root{min-height:calc(100vh - 91px)}
+  </style>
+  <script defer src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </head>
 <body>
-  <div id="root"><div style="padding:30px;font-family:Arial">正在加载 Puck 可视化后台…</div></div>
+  <header class="jh-decap-top">
+    <div class="jh-decap-brand"><div class="jh-decap-mark">JH</div><div><strong>JINHUAN · Decap CMS</strong><small>商品管理 · 多图 · 价格 · 分类 · 页面模块</small></div></div>
+    <div class="jh-decap-actions"><span class="jh-demo">预览模式</span><a href="../" target="_blank" rel="noopener">查看前台</a><a href="../puck-admin.html" target="_blank" rel="noopener">原 Puck</a></div>
+  </header>
+  <div class="jh-note"><b>先体验界面：</b>当前使用 Decap 官方 test-repo 模式，不需要登录、不会收费；可以新增商品、价格、多图和页面模块。刷新页面后测试内容会清空。确认你喜欢后，我再把它接到 GitHub 真正保存。</div>
+  <div id="nc-root"></div>
 </body>
 </html>
