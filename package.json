@@ -3,8 +3,8 @@
   "private": true,
   "description": "JINHUAN visual storefront workspace using Silex V3, Squidex and GitHub Pages.",
   "scripts": {
-    "start": "silex",
-    "silex": "silex"
+    "start": "npx @silexlabs/silex",
+    "silex": "npx @silexlabs/silex"
   },
   "devDependencies": {
     "@silexlabs/silex": "latest"
