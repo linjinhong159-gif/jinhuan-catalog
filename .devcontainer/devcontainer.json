@@ -1,0 +1,19 @@
+{
+  "name": "JINHUAN Silex V3",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "postCreateCommand": "npm install",
+  "forwardPorts": [6805],
+  "portsAttributes": {
+    "6805": {
+      "label": "Silex V3 Visual Editor",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "workbench.startupEditor": "none"
+      }
+    }
+  }
+}
